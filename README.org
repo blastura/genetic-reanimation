@@ -1,0 +1,4 @@
+* Genetic ReAnimation
+
+   This repocitory will contain an attempt to
+   evolve a natural looking walking creature.
