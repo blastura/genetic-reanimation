@@ -1,4 +1,137 @@
 * Genetic ReAnimation
+  This repocitory will contain an attempt to
+  evolve a natural looking walking creature.
+  
+* Projekt Emergenta system, VT-09
 
-   This repocitory will contain an attempt to
-   evolve a natural looking walking creature.
+** Copyright 
+Following info is from
+http://www.cs.umu.se/kurser/5DV017/VT09/lab/project.html Ansvarig för
+sidan: Jonny Pettersson Senast ändrad Wednesday, 11-Feb-2009 15:03:39
+MET Copyright © 2009. All rights reserved.
+
+* Introduktion
+Emergenta system kan hittas på många ställen och många är de
+vetenskapsområden som intresserar sig för system där emergenta
+egenskaper är en viktig del av det som studeras. Detta medför bland
+annat att kursen, Emergenta system, inte har någon möjlighet att
+beröra alla tänkbara områden där emergenta egenskaper är av betydelse.
+
+Detta projekt ger möjlighet till fördjupning inom ett delområde där
+emergens är viktigt. Då det finns många olika områden att fördjupa sig
+inom och projekten ska presenteras för övriga deltagare på kursen, ger
+det även en breddning av kursen.
+
+Projektet ska genomföras i grupper om fyra till fem personer (totalt
+åtta grupper).
+
+* Syfte
+Det övergripande syftet är att ge en fördjupning inom ett delområde
+där emergenta system studeras. Projektet har följande delsyften:
+
+    - Fördjupning inom ett specifikt område relaterat till emergenta system
+    - Breddning av kursen
+    - Träning på muntlig presentation
+    - Skriftlig färdighetsträning
+
+* Uppgift
+** Allmänt
+
+Intressanta ämnen att fördjupa sig i kommer vi gemensamt att arbeta
+fram torsdagen den 19 februari. Samtliga ämnen ska godkännas av
+kursledningen. När en lista med godkända ämnen finns får var och en
+välja vilket ämne man vill jobba med.
+
+Ni ska därefter själva söka material och fördjupa er inom ert ämne.
+
+Ert arbete ska redovisas med en vetenskaplig rapport, en muntlig
+presentation, samt en webb-sida. Webb-sidan ska innehålla en kort
+beskrivning av ert arbete samt länkar till rapport och eventuell
+kod/exekverbart program.  Redovisning
+
+Skriftlig och muntlig presentation är en väldigt viktig del av detta
+projekt. Så är det även när ni kommer ut i arbetslivet, kan man inte
+presentera det man gjort skriftligt och muntligt blir det lite
+jobbigt. Med andra ord, rapporten ni lämnar in och presentationen ni
+gör är inte bara för att tillfredställa kursledningen, utan
+framförallt för att ni ska få färdighetsträning och feedback.
+
+Tänk på läsaren när ni skriver och tänk på åhörarna när ni
+presenterar. Fundera igenom hur ni presenterar på bästa och mest
+tydliga sätt. Tänk på att det ni skriver och hur ni skriver det är av
+avgörande betydelse för hur ert arbete värderas.  Förenklad
+projektplan
+
+Innan ni sätter igång och fördjupar er ska en förenklad projektplan
+lämnas in. Projektplanen, 1-2 A4-sidor, ska innehålla:
+
+    - Förslag på titel på arbetet
+    - Vilka som ingår i er grupp, namn och cs-användare
+    - En övergripande beskrivning av "området" och projektet
+    - Centrala frågeställningar som ni vill jobba med
+    - Hur ni tänker jobba med dessa frågeställningarna. Lite tankar runt aktiviteter ni tänker er att ni ska jobba med
+    - En grov tidplanering, med några stora milstolpar så att det framgår hur ni metodisk jobbar er mot målet
+
+** Rapport
+Rapporten ska innehålla följande delar:
+
+    - Ett fullständigt försättsblad
+    - Sammanfattning/abstract
+    - Introduktion till ämnet, inklusive översikt av tidigare studier
+    - Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna reproducera ert arbete
+    - Resultat innehållande sammanställning/analys av tester
+    - Diskussion av resultatet, koppling till tidigare studier
+    - Referenser
+
+** Muntlig presentation
+Ert projekt ska presenteras för övriga deltagare på kursen. Er
+presentation ska ge en fullständig bild av vad ni gjort. Vidare ska ni
+ta fram två relevanta fördjupande reflektionsfrågor som åhörarna först
+ska få diskutera gruppvis och därefter ska ni (gruppen som
+presenterar) leda en gemensam diskussion kring frågorna samt
+eventuellt andra relevanta frågeställningar.
+
+Följande tider gäller för de olika delarna i redovisningen (total tid
+45 minuter per grupp):
+
+    - Gruppens presentation av arbetet: 20 minuter
+    - Eventuella korta förtydligande frågor: max 5 minuter
+    - Gruppdiskussion kring av gruppen utdelade frågor: 10 minuter
+    - Gemensam diskussion av utdelade frågor samt andra relevanta
+      frågeställningar: 10-15 minuter
+
+** Webb-sida
+Webb-sidan ska innehålla en kort beskrivning av ert arbete samt länkar
+till rapport och eventuell kod/exekverbart program. Webb-sidan ska
+även användas för redovisning av arbetets fortskridande. Varje måndag
+senast klockan 13.00 ska ni publicera en
+projektuppföljning. Projektuppföljningen ska innehålla följande
+punkter:
+
+    - Vad som är gjort föregående vecka
+    - En avstämning kring hur gruppen ligger till med avseende på uppgifter att göra
+    - Vad som ska göras denna vecka
+    - Hur mycket tid var och en av gruppens deltagare lagt ned senaste veckan
+
+För övrigt ska webb-sidan innehålla tillräcklig information så att det
+går att förstå vad som sker vid exekvering av eventuell kod eller
+exekverbart program.
+
+** Datum
+Projektkickoff den 19 februari 10.15 - 12.00. Under kickoffen kommer
+kursledningen att ge en utförligare presentation av
+projektarbetet. Vidare kommer ämnen att tas fram och grupper
+bildas. Då detta är ett mycket viktigt steg i projektarbetet vill vi
+att alla ska närvara under kickoffen.
+
+Måndagen den 23 februari 10.15 - 12.00 finns det möjlighet för
+diskussion kring era projekt.
+
+Projektplanen ska vara inlämnad senast den 24 februari 12.00.
+
+Rapporten och webb-sidan ska vara inlämnad senast 18 mars 8.00.
+
+Projektet ska redovisas den 20 mars 8.15 - 17.00. Närmare information
+om exakta redovisningstider lämnas senare.
+
+Lycka till!
