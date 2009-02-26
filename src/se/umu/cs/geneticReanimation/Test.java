@@ -1,4 +1,5 @@
 package se.umu.cs.geneticReanimation;
+
 import net.phys2d.math.Vector2f;
 import net.phys2d.raw.Body;
 import net.phys2d.raw.BodyList;
@@ -14,7 +15,7 @@ public class Test extends PApplet {
 	private World world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
 
 	public static void main(String args[]) {
-		PApplet.main(new String[] { "--present", "Test" });
+		PApplet.main(new String[] { "--present", "se.umu.cs.geneticReanimation.Test" });
 	}
 
 
