@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Genetic reAnimation" default="compile" basedir=".">
+
+  <!-- Dir Properties -->
+  <property name="build.dir" location="bin"/>
+  <property name="build.main.dir" location="${build.dir}/main"/>
+  <property name="build.test.dir" location="${build.dir}/test"/>
+  <property name="doc.dir" location="doc"/>
+  <property name="src.dir" location="src"/>
+  <property name="lib.dir" location="lib"/>
+  <property name="test.dir" location="test"/>
+  <property name="test.config.dir" location="${test.dir}/config"/>
+  <property name="index.dir" location="index"/>
+
+  <!-- Dir program resources -->
+  <property name="src.resources.dir" location="${src.dir}/resources"/>
+  <property name="src.config.dir" location="${src.dir}/config"/>
+
+  <!-- Package name, dirs -->
+  <property name="name" value="GeneticReAnimation" />
+  <property name="main-class" value="XXX" />
+  <property name="version" value="1.0" />
+  <property name="release" value="${name}-${version}" />
+
+  <property name="dist.dir" location="." />
+  <property name="jar.name" value="${name}.jar" />
+  <property name="jar.path" location="${dist.dir}/${jar.name}" />
+
+  <!-- Classpath -->
+  <path id="project.classpath">
+    <pathelement location="${build.main.dir}" />
+    <pathelement location="${build.test.dir}" />
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- Create build-dirs -->
+  <target name="prepare">
+    <mkdir dir="${build.main.dir}"/>
+    <mkdir dir="${build.test.dir}"/>
+  </target>
+
+  <!-- Remove build files -->
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <!-- Compile program -->
+  <target name="compile" depends="prepare">
+    <!-- Copy resource dirs -->
+    <copy todir="${build.main.dir}/resources">
+      <fileset dir="${src.resources.dir}"/>
+    </copy>
+    <!--     <copy todir="${build.main.dir}/config"> -->
+    <!--       <fileset dir="${src.config.dir}"/> -->
+    <!--     </copy> -->
+
+    <!-- Compile source -->
+    <javac srcdir="${src.dir}" destdir="${build.main.dir}" debug="on">
+      <classpath refid="project.classpath" />
+      <!-- <compilerarg value="-Xlint:unchecked"/> -->
+    </javac>
+  </target>
+
+  <!-- Compile tests -->
+  <target name="compile-tests" depends="compile">
+    <!-- Copy dirs -->
+    <!--     <copy todir="${build.test.dir}/config"> -->
+    <!--       <fileset dir="${test.config.dir}"/> -->
+    <!--     </copy> -->
+    <!--     <copy todir="${build.test.dir}/resources"> -->
+    <!--       <fileset dir="${src.resources.dir}"/> -->
+    <!--     </copy> -->
+    <!-- Compile -->
+    <javac srcdir="${test.dir}" destdir="${build.test.dir}">
+      <classpath refid="project.classpath" />
+    </javac>
+  </target>
+
+  <!-- Run tests -->
+  <target name="test" depends="compile-tests">
+    <junit haltonfailure="true" dir="${build.test.dir}" fork="true">
+      <classpath refid="project.classpath" />
+      <formatter type="plain" usefile="false" />
+      <batchtest>
+        <!-- Run junit tests on all classes with filenames that end with -->
+        <!-- Test.class -->
+        <fileset dir="${build.test.dir}"
+                 includes="**/*Test.class" />
+      </batchtest>
+      <sysproperty key="doc.dir" value="${doc.dir}" />
+      <sysproperty key="index.dir" value="${index.dir}" />
+    </junit>
+  </target>
+
+  <!-- Generate javadoc -->
+  <target name="javadoc" description="Generaties javadoc">
+    <javadoc destdir="${doc.dir}">
+      <classpath refid="project.classpath" />
+      <fileset dir="${src.dir}/" includes="**/*.java"/>
+    </javadoc>
+  </target>
+
+  <!-- Easy way to start the program -->
+  <target name="run" description="Run program" depends="compile">
+    <java classname="${main-class}" fork="true" dir="${build.main.dir}">
+      <classpath refid="project.classpath" />
+      <!-- <arg value="somevalue"/> -->
+    </java>
+  </target>
+
+  <!--   Create jar -->
+  <target name="jar" description="Create jar-file" depends="compile">
+    <mkdir dir="${dist.dir}"/>
+
+    <!-- create a property containing all .jar files, prefix lib/, and seperated with a space -->
+    <pathconvert property="libs.project" pathsep=" ">
+      <mapper>
+        <chainedmapper>
+          <!-- remove absolute path -->
+          <flattenmapper />
+          <!-- add lib/ prefix -->
+          <globmapper from="*" to="lib/*" />
+        </chainedmapper>
+      </mapper>
+      <path>
+
+        <!-- lib.home contains all jar files, in several subdirectories -->
+        <fileset dir="${lib.dir}">
+          <include name="**/*.jar" />
+        </fileset>
+      </path>
+    </pathconvert>
+
+    <!-- Create jar -->
+    <jar destfile="${jar.path}" basedir="${build.main.dir}">
+      <!-- define MANIFEST.MF -->
+      <manifest>
+        <attribute name="Built-By" value="${user.name}" />
+        <attribute name="Main-Class" value="${main-class}"/>
+
+        <!-- finally, use the magically generated libs path -->
+        <attribute name="Class-Path" value="${libs.project}" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="print-classpath" description="Prints classpath, convenient for export to emacs and jde-mode">
+    <property name="classpath" refid="project.classpath"/>
+    <echo message="-classpath-${classpath}-classpath-"/>
+  </target>
+</project>
