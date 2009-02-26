@@ -33,7 +33,7 @@ public class Test extends PApplet {
 
     @Override
     public void setup() {
-        size(100, 300);
+        size(1600 / 2, 1000 / 2);
         setupWorld();
         smooth();
     }
@@ -41,43 +41,42 @@ public class Test extends PApplet {
     public void setupWorld() {
         world.clear();
 
-        //Add static lines
+        //Add ground
         Body body1;
-        body1 = new StaticBody("Ground", new Line(width,0));
+        body1 = new StaticBody("Ground", new Box(width, 40));
+        body1.setPosition(width / 2, height - 10);
         world.add(body1);
 
-        body1 = new StaticBody("Ground", new Line(width,0));
-        body1.setPosition(0,height);
-        world.add(body1);
-
-        body1 = new StaticBody("Ground", new Line(0,height));
-        world.add(body1);
-
-        body1 = new StaticBody("Ground", new Line(0,height));
-        body1.setPosition(width,0);
-        world.add(body1);
-
-        this.leftLeg = new Body("LeftLeg", new Box(10.0f, 10.0f), 10);
-        leftLeg.setPosition(10, 10);
-        world.add(leftLeg);
-        this.rightLeg = new StaticBody("RightLeg", new Box(10.0f, 10.0f));
-        rightLeg.setPosition(25, 10);
-        world.add(rightLeg);
-        SlideJoint slideHip = new SlideJoint(leftLeg, rightLeg, new Vector2f(0, 0), new Vector2f(0, 0), 0.0f, 45.0f, 0f);
-        AngleJoint angleHip = new AngleJoint(leftLeg, rightLeg, new Vector2f(0, 0), new Vector2f(0, 0), 0.0f, 90.0f, 1f);
+        // Make dawg
+        float bw = 300.0f;
+        float bh = 50.0f;
+        float space = 10f;
+        float xOffcet = 60f;
+        float yOffcet = 60f;
         
-        world.add(slideHip);
-        world.add(angleHip);
+        Body body = new Body("Body", new Box(bw, bh), 10);
+        body.setPosition(xOffcet, yOffcet);
+        world.add(body);
+        
+        this.leftLeg = new Body("LeftLeg", new Box(10.0f, 10.0f), 10);
+        leftLeg.setPosition(xOffcet + 20, yOffcet + bh + space);
+        world.add(leftLeg);
+        
+        this.rightLeg = new Body("RightLeg", new Box(10.0f, 10.0f), 10);
+        rightLeg.setPosition(xOffcet + bw - 20, yOffcet + bh + space);
+        world.add(rightLeg);
+        
+        SlideJoint lSlideHip = new SlideJoint(body, leftLeg, new Vector2f(- bw / 2, bh / 2), new Vector2f(0, 0), 10, 15, 0);
+        AngleJoint lAngleHip = new AngleJoint(body, leftLeg, new Vector2f(- bw / 2, bh / 2), new Vector2f(0, 0), 0.0f, 90.0f, 0f);
+        
+        SlideJoint rSlideHip = new SlideJoint(body, rightLeg, new Vector2f(bw / 2, bh / 2), new Vector2f(0, 0), 10, 15, 0);
+        AngleJoint rAngleHip = new AngleJoint(body, rightLeg, new Vector2f(bw / 2, bh / 2), new Vector2f(0, 0), 0.0f, 90.0f, 0f);
+            
+        world.add(lSlideHip);
+        world.add(lAngleHip);
 
-        //Add free-falling ball
-        for (int i=0; i<10; i++) {
-            body1 = new Body("Ball", new Circle(3 + random(7)), 10);
-            body1.setPosition(width/2 - 20 + random(5), height - i*30);
-            world.add(body1);
-            body1 = new Body("Ball", new Circle(3 + random(7)), 10);
-            body1.setPosition(width/2 + 20 + random(5), height - i*30);
-            world.add(body1);
-        }
+        world.add(rSlideHip);
+        world.add(rAngleHip);
     }
     
     @Override
