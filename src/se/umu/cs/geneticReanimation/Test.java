@@ -1,32 +1,31 @@
 package se.umu.cs.geneticReanimation;
 
+import net.phys2d.math.MathUtil;
+import net.phys2d.math.Matrix2f;
+import net.phys2d.math.ROVector2f;
 import net.phys2d.math.Vector2f;
+import net.phys2d.raw.AngleJoint;
+import net.phys2d.raw.BasicJoint;
 import net.phys2d.raw.Body;
 import net.phys2d.raw.BodyList;
+import net.phys2d.raw.DistanceJoint;
+import net.phys2d.raw.FixedJoint;
+import net.phys2d.raw.Joint;
+import net.phys2d.raw.JointList;
+import net.phys2d.raw.SlideJoint;
+import net.phys2d.raw.SpringJoint;
 import net.phys2d.raw.StaticBody;
 import net.phys2d.raw.World;
+import net.phys2d.raw.shapes.Box;
 import net.phys2d.raw.shapes.Circle;
 import net.phys2d.raw.shapes.Line;
 import net.phys2d.raw.strategies.QuadSpaceStrategy;
 import processing.core.*;
-import net.phys2d.raw.shapes.Box;
-import net.phys2d.raw.AngleJoint;
-import net.phys2d.raw.SlideJoint;
-import net.phys2d.raw.FixedJoint;
-import net.phys2d.raw.SpringJoint;
-import net.phys2d.math.ROVector2f;
-import net.phys2d.raw.DistanceJoint;
-import net.phys2d.raw.BasicJoint;
-import net.phys2d.math.Matrix2f;
-import net.phys2d.math.MathUtil;
-import net.phys2d.raw.Joint;
-import net.phys2d.raw.JointList;
-import net.phys2d.raw.SpringyAngleJoint;
 
 public class Test extends PApplet {
     private World world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
     private Body leftLeg;
-    private Body rightLeg;;
+    private Body rightLeg;
     
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.Test" }); // "--present"
@@ -41,75 +40,89 @@ public class Test extends PApplet {
 
     public void setupWorld() {
         world.clear();
-
+        
         //Add ground
         Body body1;
-        body1 = new StaticBody("Ground", new Box(width, 40));
+        body1 = new StaticBody("Ground", new Box(width * 2, 100));
         body1.setPosition(width / 2, height - 10);
         world.add(body1);
-
+        
         // Make dawg
-        float bw = 300.0f;
-        float bh = 50.0f;
-        float space = 10f;
-        float xOffcet = bw / 2 + 60f;
-        float yOffcet = 60f;
+        float r = 20f;
+        float bodyLength = 45f;
+        float legWidth = 5f;
+        float legHeight = 20f;
+        float spaceing = 10f;
         
-        Body body = new Body("Body", new Box(bw, bh), 10);
-        body.setPosition(xOffcet, yOffcet);
-        world.add(body);
+        Body leftHip = new Body("", new Circle(r), 10);
+        leftHip.setPosition(0, 0);
+        world.add(leftHip);
         
-        this.leftLeg = new Body("LeftLeg", new Box(10.0f, 10.0f), 10);
-        leftLeg.setPosition(xOffcet - (bw / 2) + 20, yOffcet + bh + space);
+        this.leftLeg = new Body("LeftLeg", new Box(legWidth, legHeight), 10);
+        leftLeg.setPosition(0, r + legHeight / 2 + spaceing);
         world.add(leftLeg);
         
-        this.rightLeg = new Body("RightLeg", new Box(10.0f, 10.0f), 10);
-        rightLeg.setPosition(xOffcet + (bw / 2) - 20, yOffcet + bh + space);
+        Body leftLeg2 = new Body("LeftLeg2", new Box(legWidth, legHeight), 10);
+        leftLeg2.setPosition(0, r + (legHeight / 2) + legHeight + spaceing * 2);
+        world.add(leftLeg2);
+
+        Body rightHip = new Body("", new Circle(r), 10);
+        rightHip.setPosition(bodyLength, 0);
+        world.add(rightHip);
+        
+        this.rightLeg = new Body("RightLeg", new Box(legWidth, legHeight), 10);
+        rightLeg.setPosition(bodyLength, r + legHeight / 2 + spaceing);
         world.add(rightLeg);
         
-        BasicJoint joint = new BasicJoint(body, leftLeg,
-                                          new Vector2f(xOffcet - 20, yOffcet + bh));
+        Body rightLeg2 = new Body("RightLeg2", new Box(legWidth, legHeight), 10);
+        rightLeg2.setPosition(bodyLength, r + (legHeight / 2) + legHeight + spaceing * 2);
+        world.add(rightLeg2);
         
-
-        BasicJoint joint2 = new BasicJoint(body, rightLeg,
-                                          new Vector2f(xOffcet + bw - 20, yOffcet + bh));
-
-        world.add(joint);
-        world.add(joint2);        
-            //         SlideJoint lSlideHip = new SlideJoint(body, leftLeg,
-            //                                               new Vector2f(- bw / 2, bh / 2),
-            //                                               new Vector2f(0, 0),
-            //                                               10, 15, 0);
-            //         AngleJoint lAngleHip = new AngleJoint(body, leftLeg,
-            //                                               new Vector2f(- bw / 2, bh / 2),
-            //                                               new Vector2f(0, 0), 0.0f, 90.0f, -1f);
+        BasicJoint leftHipJoint = new BasicJoint(leftHip, leftLeg,
+                                          (Vector2f) leftHip.getPosition());
+        world.add(leftHipJoint);
         
-            //         SlideJoint rSlideHip = new SlideJoint(body, rightLeg,
-            //                                               new Vector2f(bw / 2, bh / 2),
-            //                                               new Vector2f(0, 0),
-            //                                               10, 15, 0);
-            //         AngleJoint rAngleHip = new AngleJoint(body, rightLeg,
-            //                                               new Vector2f(bw / 2, bh / 2),
-            //                                               new Vector2f(0, 0), 0.0f, 90.0f, -1f);
-            
-//         world.add(lSlideHip);
-//         world.add(lAngleHip);
+        BasicJoint leftKneeJoint = new BasicJoint(leftLeg, leftLeg2,
+                                                  getMidPosition(leftLeg, leftLeg2));
+        world.add(leftKneeJoint);
+        
+        AngleJoint leftKneeAngleJoint = new AngleJoint(leftLeg, leftLeg2,
+                                                       new Vector2f(),
+                                                       new Vector2f(),
+                                                       (float) Math.PI / 2,
+                                                       0f);
+        world.add(leftKneeAngleJoint);
+        
+        
+        BasicJoint rightHipJoint = new BasicJoint(rightHip, rightLeg,
+                                          (Vector2f) rightHip.getPosition());
+        world.add(rightHipJoint);        
+        
+        BasicJoint rightKneeJoint = new BasicJoint(rightLeg, rightLeg2,
+                                                   getMidPosition(rightLeg, rightLeg2));
+        
+        world.add(rightKneeJoint);
 
-//         world.add(rSlideHip);
-//         world.add(rAngleHip);
+        // Connect hips
+        FixedJoint backbone = new FixedJoint(leftHip, rightHip);
+        world.add(backbone);
     }
     
     @Override
     public void mousePressed() {
-        float random1 = (-1 + random(2)) * 100;
-        float random2  = (-1 + random(2)) * 1000;
-        //leftLeg.addForce(new Vector2f(random1, random2));
-        leftLeg.adjustAngularVelocity(random1);
-        println(random1 + ", " + random2);
+        //         float random1 = (-1 + random(2)) * 100;
+        //         float random2  = (-1 + random(2)) * 1000;
+        //leftLeg.addForce(new Vector2f(mouseX * 100, mouseY * 100));
+        leftLeg.adjustAngularVelocity(- (mouseX - (width / 2)));
+        //println(random1 + ", " + random2);
     }
 
     @Override
     public void draw() {
+        // Reposition center
+        pushMatrix();
+        translate(width / 2, 0);
+        
         // If you do one step() per draw, it's totally slow-mo.
         // so we are doing 8. Adjust to taste.
         for (int i=0; i < 2; i++) world.step();
@@ -128,6 +141,7 @@ public class Test extends PApplet {
             
             drawJoint(joint);
         }
+        popMatrix();
     }
 
     /** render each physics body based on what shape it is */
@@ -158,10 +172,11 @@ public class Test extends PApplet {
     private void drawCircleBody(Body body, Circle circle) {
         float r = circle.getRadius();
         float rot = body.getRotation();
+        
         pushMatrix();
         translate(body.getPosition().getX(), body.getPosition().getY());
         rotate(rot);
-        noStroke();
+        //   noStroke();
         fill(255);
         ellipse(0,0,r*2,r*2);
         stroke(255,0,0);
@@ -266,10 +281,11 @@ public class Test extends PApplet {
             Vector2f p2 = MathUtil.mul(R2,angleJoint.getAnchor2());
             p2.add(x2);
 			
-            stroke(255, 0, 0);
+            stroke(0, 255, 0);
             line((int)p1.x,(int)p1.y,(int)(p1.x+VA.x*20),(int)(p1.y+VA.y*20));
             line((int)p1.x,(int)p1.y,(int)(p1.x+VB.x*20),(int)(p1.y+VB.y*20));
         }
+        
         if (j instanceof BasicJoint) {
             BasicJoint joint = (BasicJoint) j;
 			
@@ -336,5 +352,14 @@ public class Test extends PApplet {
             line((int) p2.getX(), (int) p2.getY(), (int) x2.getX(), (int) x2.getY());
         }
     }
-}
 
+    public Vector2f getMidPosition(Body b1, Body b2) {
+        Vector2f v1 = (Vector2f) b1.getPosition();
+        Vector2f v2 = (Vector2f) b2.getPosition();
+            
+        // TODO: check calculations for lines where x1 != x2 or y1 != y2
+        float dx = v1.x - v2.x;
+        float dy = v1.y - v2.y;
+        return new Vector2f(v1.x - (dx / 2), v1.y - (dy / 2));
+    }
+}
