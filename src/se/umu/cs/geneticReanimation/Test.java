@@ -21,6 +21,7 @@ import net.phys2d.math.Matrix2f;
 import net.phys2d.math.MathUtil;
 import net.phys2d.raw.Joint;
 import net.phys2d.raw.JointList;
+import net.phys2d.raw.SpringyAngleJoint;
 
 public class Test extends PApplet {
     private World world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
@@ -51,7 +52,7 @@ public class Test extends PApplet {
         float bw = 300.0f;
         float bh = 50.0f;
         float space = 10f;
-        float xOffcet = 60f;
+        float xOffcet = bw / 2 + 60f;
         float yOffcet = 60f;
         
         Body body = new Body("Body", new Box(bw, bh), 10);
@@ -59,29 +60,48 @@ public class Test extends PApplet {
         world.add(body);
         
         this.leftLeg = new Body("LeftLeg", new Box(10.0f, 10.0f), 10);
-        leftLeg.setPosition(xOffcet + 20, yOffcet + bh + space);
+        leftLeg.setPosition(xOffcet - (bw / 2) + 20, yOffcet + bh + space);
         world.add(leftLeg);
         
         this.rightLeg = new Body("RightLeg", new Box(10.0f, 10.0f), 10);
-        rightLeg.setPosition(xOffcet + bw - 20, yOffcet + bh + space);
+        rightLeg.setPosition(xOffcet + (bw / 2) - 20, yOffcet + bh + space);
         world.add(rightLeg);
         
-        SlideJoint lSlideHip = new SlideJoint(body, leftLeg, new Vector2f(- bw / 2, bh / 2), new Vector2f(0, 0), 10, 15, 0);
-        AngleJoint lAngleHip = new AngleJoint(body, leftLeg, new Vector2f(- bw / 2, bh / 2), new Vector2f(0, 0), 0.0f, 90.0f, 0f);
+        BasicJoint joint = new BasicJoint(body, leftLeg,
+                                          new Vector2f(xOffcet - 20, yOffcet + bh));
         
-        SlideJoint rSlideHip = new SlideJoint(body, rightLeg, new Vector2f(bw / 2, bh / 2), new Vector2f(0, 0), 10, 15, 0);
-        AngleJoint rAngleHip = new AngleJoint(body, rightLeg, new Vector2f(bw / 2, bh / 2), new Vector2f(0, 0), 0.0f, 90.0f, 0f);
-            
-        world.add(lSlideHip);
-        world.add(lAngleHip);
 
-        world.add(rSlideHip);
-        world.add(rAngleHip);
+        BasicJoint joint2 = new BasicJoint(body, rightLeg,
+                                          new Vector2f(xOffcet + bw - 20, yOffcet + bh));
+
+        world.add(joint);
+        world.add(joint2);        
+            //         SlideJoint lSlideHip = new SlideJoint(body, leftLeg,
+            //                                               new Vector2f(- bw / 2, bh / 2),
+            //                                               new Vector2f(0, 0),
+            //                                               10, 15, 0);
+            //         AngleJoint lAngleHip = new AngleJoint(body, leftLeg,
+            //                                               new Vector2f(- bw / 2, bh / 2),
+            //                                               new Vector2f(0, 0), 0.0f, 90.0f, -1f);
+        
+            //         SlideJoint rSlideHip = new SlideJoint(body, rightLeg,
+            //                                               new Vector2f(bw / 2, bh / 2),
+            //                                               new Vector2f(0, 0),
+            //                                               10, 15, 0);
+            //         AngleJoint rAngleHip = new AngleJoint(body, rightLeg,
+            //                                               new Vector2f(bw / 2, bh / 2),
+            //                                               new Vector2f(0, 0), 0.0f, 90.0f, -1f);
+            
+//         world.add(lSlideHip);
+//         world.add(lAngleHip);
+
+//         world.add(rSlideHip);
+//         world.add(rAngleHip);
     }
     
     @Override
     public void mousePressed() {
-        float random1 = (-1 + random(2)) * 10;
+        float random1 = (-1 + random(2)) * 100;
         float random2  = (-1 + random(2)) * 1000;
         //leftLeg.addForce(new Vector2f(random1, random2));
         leftLeg.adjustAngularVelocity(random1);
@@ -92,9 +112,9 @@ public class Test extends PApplet {
     public void draw() {
         // If you do one step() per draw, it's totally slow-mo.
         // so we are doing 8. Adjust to taste.
-        for (int i=0; i<1; i++) world.step();
+        for (int i=0; i < 2; i++) world.step();
 
-        background(0);
+        background(255);
 
         BodyList bodies = world.getBodies();
         int s = bodies.size();
@@ -125,7 +145,7 @@ public class Test extends PApplet {
     }
 
     private void drawLineBody(Body body, Line line) {
-        stroke(255,255,0);
+        stroke(0, 0, 0);
         strokeWeight(3);
         float x = body.getPosition().getX();
         float y = body.getPosition().getY();
@@ -160,8 +180,8 @@ public class Test extends PApplet {
      * @param box The shape to be drawn
      */
     protected void drawBoxBody(Body body, Box box) {
-        stroke(255,255,0);
-        strokeWeight(2);
+        stroke(0, 0, 0);
+        strokeWeight(1);
         
         Vector2f[] pts = box.getPoints(body.getPosition(), body.getRotation());
 
@@ -187,7 +207,6 @@ public class Test extends PApplet {
         if (j instanceof FixedJoint) {
             FixedJoint joint = (FixedJoint) j;
 			
-            
             stroke(255, 0, 0);
             float x1 = joint.getBody1().getPosition().getX();
             float x2 = joint.getBody2().getPosition().getX();
