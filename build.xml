@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Genetic reAnimation" default="compile" basedir=".">
+<project name="genetic-reanimation" default="compile" basedir=".">
 
   <!-- Dir Properties -->
   <property name="build.dir" location="bin"/>
