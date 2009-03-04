@@ -17,6 +17,10 @@ public class Dog {
 	float legWidth = 5f;
 	float legHeight = 20f;
 	float spaceing = 10f;
+	float mass_hip = 10;
+	float mass_thigh = 2f;
+	float mass_leg = 2f;
+
 
 	/* World */
 	private World world;
@@ -41,7 +45,7 @@ public class Dog {
 	}
 
 	private void initDog() {
-		// Make dawg
+		/* Make bodyparts */
 		hipLeft = new Body("", new Circle(r), 10);
 		hipLeft.setPosition(0, 0);
 		world.add(hipLeft);
@@ -50,49 +54,49 @@ public class Dog {
 		thighLeft.setPosition(0, r + legHeight / 2 + spaceing);
 		world.add(thighLeft);
 
-		Body thighLeft2 = new Body("thighLeft2", new Box(legWidth, legHeight), 10);
-		thighLeft2.setPosition(0, r + (legHeight / 2) + legHeight + spaceing * 2);
-		world.add(thighLeft2);
+		legLeft = new Body("legLeft", new Box(legWidth, legHeight), 10);
+		legLeft.setPosition(0, r + (legHeight / 2) + legHeight + spaceing * 2);
+		world.add(legLeft);
 
-		Body rightHip = new Body("", new Circle(r), 10);
-		rightHip.setPosition(bodyLength, 0);
-		world.add(rightHip);
+		hipRight = new Body("", new Circle(r), 10);
+		hipRight.setPosition(bodyLength, 0);
+		world.add(hipRight);
 
-		this.thighRight = new Body("thighRight", new Box(legWidth, legHeight), 10);
+		thighRight = new Body("thighRight", new Box(legWidth, legHeight), 10);
 		thighRight.setPosition(bodyLength, r + legHeight / 2 + spaceing);
 		world.add(thighRight);
 
-		Body thighRight2 = new Body("thighRight2", new Box(legWidth, legHeight), 10);
-		thighRight2.setPosition(bodyLength, r + (legHeight / 2) + legHeight + spaceing * 2);
-		world.add(thighRight2);
+		legRight = new Body("thighRight2", new Box(legWidth, legHeight), 10);
+		legRight.setPosition(bodyLength, r + (legHeight / 2) + legHeight + spaceing * 2);
+		world.add(legRight);
 
+		/* Joints */
 		BasicJoint hipLeftJoint = new BasicJoint(hipLeft, thighLeft,
 				(Vector2f) hipLeft.getPosition());
 		world.add(hipLeftJoint);
 
-		BasicJoint leftKneeJoint = new BasicJoint(thighLeft, thighLeft2,
-				getMidPosition(thighLeft, thighLeft2));
+		BasicJoint leftKneeJoint = new BasicJoint(thighLeft, legLeft,
+				getMidPosition(thighLeft, legLeft));
 		world.add(leftKneeJoint);
 
-		AngleJoint leftKneeAngleJoint = new AngleJoint(thighLeft, thighLeft2,
+		AngleJoint leftKneeAngleJoint = new AngleJoint(thighLeft, legLeft,
 				new Vector2f(),
 				new Vector2f(),
 				(float) Math.PI / 2,
 				0f);
 		world.add(leftKneeAngleJoint);
 
+		BasicJoint hipRightJoint = new BasicJoint(hipRight, thighRight,
+				(Vector2f) hipRight.getPosition());
+		world.add(hipRightJoint);        
 
-		BasicJoint rightHipJoint = new BasicJoint(rightHip, thighRight,
-				(Vector2f) rightHip.getPosition());
-		world.add(rightHipJoint);        
-
-		BasicJoint rightKneeJoint = new BasicJoint(thighRight, thighRight2,
-				getMidPosition(thighRight, thighRight2));
+		BasicJoint rightKneeJoint = new BasicJoint(thighRight, legRight,
+				getMidPosition(thighRight, legRight));
 
 		world.add(rightKneeJoint);
 
 		// Connect hips
-		FixedJoint backbone = new FixedJoint(hipLeft, rightHip);
+		FixedJoint backbone = new FixedJoint(hipLeft, hipRight);
 		world.add(backbone);
 	}
 
