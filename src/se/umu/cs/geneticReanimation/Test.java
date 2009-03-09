@@ -5,6 +5,7 @@ import net.phys2d.math.Matrix2f;
 import net.phys2d.math.ROVector2f;
 import net.phys2d.math.Vector2f;
 import net.phys2d.raw.AngleJoint;
+import net.phys2d.raw.SpringyAngleJoint;
 import net.phys2d.raw.BasicJoint;
 import net.phys2d.raw.Body;
 import net.phys2d.raw.BodyList;
@@ -26,6 +27,8 @@ public class Test extends PApplet {
     private World world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
     private Body leftLeg;
     private Body rightLeg;
+	private SpringJoint rightLegSpring;
+	private SpringJoint rightLegSpring2;
     
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.Test" }); // "--present"
@@ -46,75 +49,48 @@ public class Test extends PApplet {
         body1 = new StaticBody("Ground", new Box(width * 2, 100));
         body1.setPosition(width / 2, height - 10);
         world.add(body1);
-        
-        // Make dawg
-        float r = 20f;
-        float bodyLength = 45f;
-        float legWidth = 5f;
-        float legHeight = 20f;
+       
+	   	body1 = new Body("plopp", new Circle(60f), 10);
+		body1.setPosition(50,300);
+		world.add(body1);
+
+        // Make schneyk
+        float sWidth = 20f;
+        float sHeight = 10f;
         float spaceing = 10f;
-        
-        Body leftHip = new Body("", new Circle(r), 10);
-        leftHip.setPosition(0, 0);
-        world.add(leftHip);
-        
-        this.leftLeg = new Body("LeftLeg", new Box(legWidth, legHeight), 10);
-        leftLeg.setPosition(0, r + legHeight / 2 + spaceing);
-        world.add(leftLeg);
-        
-        Body leftLeg2 = new Body("LeftLeg2", new Box(legWidth, legHeight), 10);
-        leftLeg2.setPosition(0, r + (legHeight / 2) + legHeight + spaceing * 2);
-        world.add(leftLeg2);
+        int sections = 5;
+		
+		Body segment = null;
+		Body prev_segment;
 
-        Body rightHip = new Body("", new Circle(r), 10);
-        rightHip.setPosition(bodyLength, 0);
-        world.add(rightHip);
-        
-        this.rightLeg = new Body("RightLeg", new Box(legWidth, legHeight), 10);
-        rightLeg.setPosition(bodyLength, r + legHeight / 2 + spaceing);
-        world.add(rightLeg);
-        
-        Body rightLeg2 = new Body("RightLeg2", new Box(legWidth, legHeight), 10);
-        rightLeg2.setPosition(bodyLength, r + (legHeight / 2) + legHeight + spaceing * 2);
-        world.add(rightLeg2);
-        
-        BasicJoint leftHipJoint = new BasicJoint(leftHip, leftLeg,
-                                          (Vector2f) leftHip.getPosition());
-        world.add(leftHipJoint);
-        
-        BasicJoint leftKneeJoint = new BasicJoint(leftLeg, leftLeg2,
-                                                  getMidPosition(leftLeg, leftLeg2));
-        world.add(leftKneeJoint);
-        
-        AngleJoint leftKneeAngleJoint = new AngleJoint(leftLeg, leftLeg2,
-                                                       new Vector2f(),
-                                                       new Vector2f(),
-                                                       (float) Math.PI / 2,
-                                                       0f);
-        world.add(leftKneeAngleJoint);
-        
-        
-        BasicJoint rightHipJoint = new BasicJoint(rightHip, rightLeg,
-                                          (Vector2f) rightHip.getPosition());
-        world.add(rightHipJoint);        
-        
-        BasicJoint rightKneeJoint = new BasicJoint(rightLeg, rightLeg2,
-                                                   getMidPosition(rightLeg, rightLeg2));
-        
-        world.add(rightKneeJoint);
+        for(int i=0; i<sections; i++) {
+			prev_segment = segment;
+			segment = new Body("Segment", new Box(sWidth, sHeight), 10);
+        	segment.setPosition((sWidth + spaceing)*i, 0);
+        	world.add(segment);
+			if(i > 0) {
+				Vector2f fixpoint1 = new Vector2f(sWidth/2f, 0);
+				Vector2f fixpoint2 = new Vector2f(-sWidth/2f, 0);
+				DistanceJoint dj = new DistanceJoint(prev_segment, segment, fixpoint1, fixpoint2, spaceing);
+				world.add(dj);
+				
+				SpringyAngleJoint saj = new SpringyAngleJoint(prev_segment, segment, fixpoint1, fixpoint2, 50000f, 0f);
+				world.add(saj);
 
-        // Connect hips
-        FixedJoint backbone = new FixedJoint(leftHip, rightHip);
-        world.add(backbone);
-    }
+			}
+		}	
+	}
     
     @Override
     public void mousePressed() {
         //         float random1 = (-1 + random(2)) * 100;
         //         float random2  = (-1 + random(2)) * 1000;
-        //leftLeg.addForce(new Vector2f(mouseX * 100, mouseY * 100));
-        leftLeg.adjustAngularVelocity(- (mouseX - (width / 2)));
+        //leftLeg.addForce(new Vector2f(mouseX * 100, mouseY * 100)); leftLeg.adjustAngularVelocity(- (mouseX - (width / 2)));
         //println(random1 + ", " + random2);
+
+		rightLegSpring.setSpringSize((mouseX)/5);
+		System.out.println(rightLegSpring.getSpringSize());
+
     }
 
     @Override
