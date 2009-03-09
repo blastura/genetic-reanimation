@@ -71,7 +71,7 @@ public class GeneticAlgoritm {
 		for (int i = genotypeSize/2; i<genotypeSize; i++) {
 			childGenotype[i]=parent2Genotype[i];
 		}
-		Creature child = new Creature(childGenotype.length);
+		Creature child = new WormCreature(childGenotype.length);
 		return child;
 	}
 
@@ -91,7 +91,7 @@ public class GeneticAlgoritm {
 		for (int i = 0; i<genotypeSize; i++) {
 			newGenotype[i] = ((Math.random()*2)-1);
 		}
-		return new Creature(newGenotype.length);
+		return new WormCreature(newGenotype.length);
 	}
 	
 }
