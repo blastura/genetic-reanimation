@@ -1,19 +1,36 @@
-package se.umu.cs.geneticReanimation;
+package se.umu.cs.geneticReanimation.neuralnet;
 
-import java.util.Arrays;
+import java.util.List;
 
-public class HopfieldNeuralNet implements NeuralNet { 
+public class HopfieldNeuralNet implements Brain { 
     private double weightMatrix[][];
     private double[] nodes;
     private double[] inputs;
-    
+
     public HopfieldNeuralNet(int size) {
         this.weightMatrix = new double[size][size];
         this.nodes = new double[size];
     }
 
-    public void setWeightMatrix(double weightMatrix[][]) {
-
+    public void setGenotype(final double[] genotype) {
+        // TODO:
+    }
+    
+    public double[] getGenotype() {
+        // TODO:
+        return new double[1];
+    }
+    
+    private void setWeightMatrix(final double weightMatrix[][]) {
+        // Check values
+        for (double[] row : weightMatrix) {
+            for (double value: row) {
+                if (value < -1 || value > 1) {
+                    throw new IllegalArgumentException("Values must be between -1 and 1");
+                }
+            }
+        }
+        this.weightMatrix = weightMatrix;
     }
     
     public double[][] getWeightMatrix() {
@@ -26,6 +43,9 @@ public class HopfieldNeuralNet implements NeuralNet {
         }
     }
     
+    /**
+     * Update node values from current input and all neighbours.
+     */
     private void step() {
         double[] tmpNodes = new double[nodes.length];
         
@@ -48,7 +68,7 @@ public class HopfieldNeuralNet implements NeuralNet {
         }
     }
     
-    public double[] getOutput() {
+    public double[] getOutputs() {
         step();
         return new double[1];
     }

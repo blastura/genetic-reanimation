@@ -13,13 +13,17 @@ public class HopfieldNeuralNetTest {
     
     @Before
     public void setUp() {
-        this.nn = new HopfieldNeuralNet(3);
+        this.nn = new HopfieldNeuralNet(2);
+        double[][] w = {{1.0, 1.0}, {1.0, 1.0}};
+        nn.setWeightMatrix(w);
     }
 
     @After
     public void tearDown() {
     }
 
+    
+    
     @Test
     public void testSigmoid() {
         assertEquals(nn.sigmoid(1.0), Math.abs(nn.sigmoid(-1.0)), tolerance);

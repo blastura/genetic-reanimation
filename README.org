@@ -1,7 +1,16 @@
 * Genetic ReAnimation
   This repocitory will contain an attempt to evolve a natural looking
   walking creature.
-
+  
+* Recurrent neural network
+  Connections between nodes in a neural network can be bidirected.
+  
+** Kohonen Feature Map, Teuvo Kohonen (University of Helsinki) in 1982
+   Human brain simulation.
+   
+** Hopfield neural network, J.J. Hopfield in 1982
+   Fully connected single layer network.
+* LIZZY   
 * Projekt Emergenta system, VT-09
 
 ** Copyright
