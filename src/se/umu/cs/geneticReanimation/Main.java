@@ -1,5 +1,7 @@
 package se.umu.cs.geneticReanimation;
 
+import java.util.List;
+
 import net.phys2d.math.MathUtil;
 import net.phys2d.math.Matrix2f;
 import net.phys2d.math.ROVector2f;
@@ -25,6 +27,14 @@ import processing.core.*;
 public class Main extends PApplet {
     private World world;
     private Dog dog;
+    private GeneticAlgoritm ga;
+    private List<Creature> population;
+    
+    // Parameters
+    private int genoLength;
+    private int populationSize;
+    private double crossoverRate;
+    private double mutationRate;
     
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.Main" }); // "--present"
@@ -32,10 +42,12 @@ public class Main extends PApplet {
 
     @Override
     public void setup() {
-    	world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
-        size(1600 / 2, 1000 / 2);
+    	//setup population
+        createPopulation();
+        ga = new GeneticAlgoritm(genoLength, populationSize, crossoverRate, mutationRate);
+        
         setupWorld();
-        setupDog();
+        //setupDog();
         smooth();
     }
 
@@ -44,17 +56,24 @@ public class Main extends PApplet {
 	}
 
 	public void setupWorld() {
-        world.clear();
-        
+		world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
+        size(1600 / 2, 1000 / 2);
+		world.clear();
+		
         //Add ground
         Body body1;
         body1 = new StaticBody("Ground", new Box(width * 2, 100));
         body1.setPosition(width / 2, height - 10);
         world.add(body1);
-        
-        
     }
     
+	/**
+	 * Creates new population
+	 */
+	private void createPopulation() {
+		this.population = ga.createPopulation();
+	}
+	
     @Override
     public void mousePressed() {
         //         float random1 = (-1 + random(2)) * 100;
@@ -73,6 +92,8 @@ public class Main extends PApplet {
         // If you do one step() per draw, it's totally slow-mo.
         // so we are doing 8. Adjust to taste.
         for (int i=0; i < 8; i++) world.step();
+        
+        simulationStep();
 
         background(255);
 
@@ -91,7 +112,15 @@ public class Main extends PApplet {
         popMatrix();
     }
 
-    /** render each physics body based on what shape it is */
+  
+    
+    
+    private void simulationStep() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/** render each physics body based on what shape it is */
     private void drawBody(Body body) {
         if (body.getShape() instanceof Circle) {
             drawCircleBody(body, (Circle)body.getShape());
