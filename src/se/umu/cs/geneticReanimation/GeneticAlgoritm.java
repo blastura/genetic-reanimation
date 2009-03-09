@@ -58,10 +58,21 @@ public class GeneticAlgoritm {
 			newPopulation.add(parent2);
 		}
 		
-		
+		for (int i = 0; i>populationSize; i++) {
+			mutate((Creature)newPopulation.get(i));
+		}
 		
 		population = newPopulation;
 		return population;
+	}
+	
+	private void mutate(Creature creature) {
+		double[] genotype = creature.getGenotype();
+		for(int i = 0; i<populationSize; i++) {
+			if (mutationRate>Math.random()) {
+				genotype[i]= genotype[i] + (Math.random()/2 - 0.5);
+			}
+		}
 	}
 	
 	private Creature crossover(Creature parent1, Creature parent2) {
