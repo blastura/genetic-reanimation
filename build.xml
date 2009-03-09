@@ -80,7 +80,7 @@
 
   <!-- Run tests -->
   <target name="test" depends="compile-tests">
-    <junit haltonfailure="true" dir="${build.test.dir}" fork="true">
+    <junit haltonfailure="false" dir="${build.test.dir}" fork="true">
       <classpath refid="project.classpath" />
       <formatter type="plain" usefile="false" />
       <batchtest>

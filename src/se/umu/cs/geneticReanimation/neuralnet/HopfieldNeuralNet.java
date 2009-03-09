@@ -1,13 +1,13 @@
 package se.umu.cs.geneticReanimation.neuralnet;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class HopfieldNeuralNet implements Brain { 
     private double weightMatrix[][];
     private double[] nodes;
     private double[] inputs;
     
-    public HopfieldNeuralNet(double[] genotype) {
+    public HopfieldNeuralNet(final double[] genotype) {
         setGenotype(genotype);
         // TODO:
     }
@@ -19,15 +19,36 @@ public class HopfieldNeuralNet implements Brain {
     }
 
     public void setGenotype(final double[] genotype) {
-        // TODO:
+        double sqrt = Math.sqrt(genotype.length);
+        if (sqrt % 1 != 0 || genotype.length < 4) {
+            String errorMsg = "Genotype length must be bigger than 3 and have "
+                + "an integer root. Example valid length: 4, 9, 16";
+            throw new IllegalArgumentException(errorMsg);
+        }
+        int size = (int) sqrt;
+        this.weightMatrix = new double[size][size];
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                weightMatrix[i][j] = genotype[0];
+                count++;
+            }
+        }
     }
     
     public double[] getGenotype() {
-        // TODO:
-        return new double[1];
+        double[] result = new double[weightMatrix.length * 2];
+        int count = 0;
+        for (double[] row : weightMatrix) {
+            for (double value : row) {
+                result[count] = value;
+                count++;
+            }
+        }
+        return result;
     }
     
-    private void setWeightMatrix(final double weightMatrix[][]) {
+    public void setWeightMatrix(final double weightMatrix[][]) {
         // Check values
         for (double[] row : weightMatrix) {
             for (double value: row) {
@@ -52,7 +73,7 @@ public class HopfieldNeuralNet implements Brain {
     /**
      * Update node values from current input and all neighbours.
      */
-    private void step() {
+    public void step() {
         double[] tmpNodes = new double[nodes.length];
         
         // Fill tmpNodes with values from input and nodes
@@ -62,7 +83,7 @@ public class HopfieldNeuralNet implements Brain {
                 tmpNodes[i] += inputs[i];
             }
             
-            // Fore every neighbour add value * weight
+            // For every neighbour in nodes put value * weight in tmpNodes
             for (int j = 0; j < lenght; j++) {
                 tmpNodes[i] += nodes[j] * weightMatrix[i][j];
             }
@@ -75,8 +96,9 @@ public class HopfieldNeuralNet implements Brain {
     }
     
     public double[] getOutputs() {
-        step();
-        return new double[1];
+        // step();
+        // TODO: size of output?
+        return Arrays.copyOf(nodes, nodes.length);
     }
 
     // TODO: test

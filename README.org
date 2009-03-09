@@ -10,7 +10,10 @@
    
 ** Hopfield neural network, J.J. Hopfield in 1982
    Fully connected single layer network.
-* LIZZY   
+* Log
+**  Neural net
+  CLOCK: [2009-03-09 Mon 19:44]--[2009-03-09 Mon 21:57] =>  2:13
+  
 * Projekt Emergenta system, VT-09
 
 ** Copyright
