@@ -6,9 +6,15 @@ public class HopfieldNeuralNet implements Brain {
     private double weightMatrix[][];
     private double[] nodes;
     private double[] inputs;
-
+    
+    public HopfieldNeuralNet(double[] genotype) {
+        setGenotype(genotype);
+        // TODO:
+    }
+    
     public HopfieldNeuralNet(int size) {
         this.weightMatrix = new double[size][size];
+        // TODO: create random weights
         this.nodes = new double[size];
     }
 
