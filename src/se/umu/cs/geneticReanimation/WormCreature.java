@@ -15,28 +15,30 @@ import se.umu.cs.geneticReanimation.neuralnet.HopfieldNeuralNet;
 public class WormCreature implements Creature {
     private double fitness;
     private Brain brain;
-    private World world;
     private List<Body> bodyList;
     private List<Joint> jointList;
+    // Effectors
+    private SpringyAngleJoint[] saj;
     
     public WormCreature(double[] genotype) {
         this.brain = new HopfieldNeuralNet(genotype);
+        initBody();
         this.bodyList = new ArrayList<Body>();
         this.jointList = new ArrayList<Joint>();
-        initBody();
     }
     
     public WormCreature() {
         // TODO: decide from input output
-        int genotypeSize = 5 * 5;
+        this.bodyList = new ArrayList<Body>();
+        this.jointList = new ArrayList<Joint>();
+        initBody();
+        
+        int genotypeSize = (int) Math.pow(bodyList.size(), 2); //saj.length * saj.length;
         double[] newGenotype = new double[genotypeSize];
         for (int i = 0; i<genotypeSize; i++) {
             newGenotype[i] = ((Math.random()*2)-1);
         }
         this.brain = new HopfieldNeuralNet(newGenotype);
-        this.bodyList = new ArrayList<Body>();
-        this.jointList = new ArrayList<Joint>();
-        initBody();
     }
     
     public void connectToWorld(World world) {
@@ -55,13 +57,12 @@ public class WormCreature implements Creature {
         float spaceing = 10f;
         int sections = 5;
 
-        SpringyAngleJoint[] saj;
         saj = new SpringyAngleJoint[sections-1];
-
+        
         Body segment = null;
         Body prev_segment;
 
-        for(int i=0; i<sections; i++) {
+        for(int i = 0; i < sections; i++) {
             prev_segment = segment;
             segment = new Body("Segment", new Box(sWidth, sHeight), 1);
             segment.setPosition((sWidth + spaceing)*i, 0);
@@ -81,18 +82,21 @@ public class WormCreature implements Creature {
     }
     
     public void act() {
-        //         double[] inputs = {hipRight.getPosition().getY(),
-        //                            hipLeft.getPosition().getY(),
-        //                            legLeft.getPosition().getX(),                           
-        //                            legRight.getPosition().getY()};
-        //         brain.setInputs(inputs);
-        //         brain.step();
-        //         brain.step();
-        //         double[] output = brain.getOutputs();
+        double[] inputs = new double[bodyList.size()];
+        for (int i = 0, length = inputs.length; i < length; i++) {
+            inputs[i] = bodyList.get(i).getPosition().getY();
+        }
+
+        brain.setInputs(inputs);
+        brain.step();
+        brain.step();
+        double[] outputs = brain.getOutputs();
         
-        //         // Affect worm
-        //         legLeft.adjustAngularVelocity((float) output[2] * 2);
-        //         legRight.adjustAngularVelocity((float) output[2] * 2);
+        // Affect worm
+        for (int i = 0, length = outputs.length; i < length && i < saj.length; i++) {
+            // TODO: jointList out of bounds, warn or check?
+            saj[i].setOriginalAngle((float) ((outputs[i] * Math.PI)));
+        }
     }
     
     public double getFitness() {

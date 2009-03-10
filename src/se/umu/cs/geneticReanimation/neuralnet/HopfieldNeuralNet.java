@@ -1,7 +1,5 @@
 package se.umu.cs.geneticReanimation.neuralnet;
 
-import java.util.Arrays;
-
 public class HopfieldNeuralNet implements Brain { 
     private double weightMatrix[][];
     private double[] nodes;

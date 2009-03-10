@@ -18,7 +18,7 @@
 
   <!-- Package name, dirs -->
   <property name="name" value="GeneticReAnimation" />
-  <property name="main-class" value="se.umu.cs.geneticReanimation.Main" />
+  <property name="main-class" value="se.umu.cs.geneticReanimation.ProcessingView" />
   <property name="version" value="1.0" />
   <property name="release" value="${name}-${version}" />
 

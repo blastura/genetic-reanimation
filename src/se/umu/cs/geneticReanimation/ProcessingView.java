@@ -1,7 +1,5 @@
 package se.umu.cs.geneticReanimation;
 
-import java.util.List;
-
 import net.phys2d.math.MathUtil;
 import net.phys2d.math.Matrix2f;
 import net.phys2d.math.ROVector2f;
@@ -16,30 +14,30 @@ import net.phys2d.raw.Joint;
 import net.phys2d.raw.JointList;
 import net.phys2d.raw.SlideJoint;
 import net.phys2d.raw.SpringJoint;
-import net.phys2d.raw.StaticBody;
 import net.phys2d.raw.World;
 import net.phys2d.raw.shapes.Box;
 import net.phys2d.raw.shapes.Circle;
 import net.phys2d.raw.shapes.Line;
-import net.phys2d.raw.strategies.QuadSpaceStrategy;
 import processing.core.*;
 
 public class ProcessingView extends PApplet{
-    
-	private Simulation s;
-	
+
+    private Simulation s;
+
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView" }); // "--present"
     }
-	
+
     @Override
     public void setup() {
-    	this.s = new Simulation(this);
-    	println("Processing starts...");
+        println("Processing starts...");
         smooth();
+        this.s = new Simulation(this);
         new Thread(s).start();
+        // Prevent draw from looping
+        // Update view with redraw()
+        noLoop();
     }
-
 
     @Override
     public void mousePressed() {
@@ -52,8 +50,8 @@ public class ProcessingView extends PApplet{
 
     @Override
     public void draw() {
-    	World world = s.getWorld();
-    	
+        World world = s.getWorld();
+        
         // Reposition center
         pushMatrix();
         translate(width / 2, 0);
@@ -61,16 +59,13 @@ public class ProcessingView extends PApplet{
         background(255);
 
         BodyList bodies = world.getBodies();
-        int s = bodies.size();
-        for (int i=0; i<s; i++) {
+        for (int i = 0, length = bodies.size(); i < length; i++) {
             drawBody(bodies.get(i));
         }
 
         JointList joints = world.getJoints();
-        for (int i=0;i<joints.size();i++) {
-            Joint joint = joints.get(i);
-
-            drawJoint(joint);
+        for (int i = 0, length = joints.size(); i < length; i++) {
+            drawJoint(joints.get(i));
         }
         popMatrix();
     }
