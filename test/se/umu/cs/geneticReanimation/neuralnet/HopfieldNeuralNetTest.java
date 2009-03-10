@@ -85,14 +85,20 @@ public class HopfieldNeuralNetTest {
     
     @Test
     public void testOutput() {
-        double[] genotype = {1.0, 0.0,
-                             1.0, 0.0};
+        double[] genotype = {1.0, 0.8,   0.3,   0.234,
+                             1.0, 0.8,   0.3,   0.234,
+                             1.0, 0.8,   0.3,   0.234,
+                             1.0, 0.234, 0.346, 0.634};
         HopfieldNeuralNet nn = new HopfieldNeuralNet(genotype);
-        double[] inputs = {1.0, 0.0};
+        double[] inputs = {-1.0, 23.0};
         nn.setInputs(inputs);
         
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             nn.step();
+            double[] output = nn.getOutputs();
+            for (int j = 0, length = output.length; j < length; j++) {
+                System.out.println(j + " -> " + output[j]);
+            }
         }
         
         System.out.println("Genotype = [");
