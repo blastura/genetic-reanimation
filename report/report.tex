@@ -39,9 +39,9 @@
 \floatname{kod}{Kodsnutt}
 
 % vars
-\def\title{Boids}
-\def\preTitle{Laboration 2}
-\def\kurs{Emergenta system, VT-09}
+\def\title{Genetisk animation; rörelsemönster i 2D mha neuralt nät och genetisk algoritm}
+\def\preTitle{}
+\def\kurs{Emergenta system, 5DV017}
 
 \def\namn{Andreas Jakobsson}
 \def\mail{dit06ajs@cs.umu.se}
@@ -64,7 +64,7 @@
 \def\handledareTva{Anders Broberg, bopspe@cs.umu.se}
 
 \def\inst{datavetenskap}
-\def\dokumentTyp{Laborationsrapport}
+\def\dokumentTyp{Projektrapport}
 
 \begin{document}
 \begin{titlepage}
@@ -132,9 +132,38 @@
 % Introduktion till ämnet, inklusive översikt av tidigare studier
 % \cite{flake}
 
+\subsection{Karl Sims}
+Karl Sims utforskar i Evolvig Virtual Creatures både hur varelsers form och deras beteenden kan utvecklas med hjälp av genetiska algoritmer (GA). Varelserna har sensorer och effektorer som är kopplade till in och utnoder i ett neuralat nät. 
+
+I sina försök använder Sims en GA för att optimera både struktur och vikter i det neurala nätet. Det nät han använder har i varje nod en av många matematiska funktioner; exempelvis sinus, summa, produkt, max, osv. 
+
+
 \section{Metodbeskrivning}
 % Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna
 % reproducera ert arbete
+
+
+Systemöversikt
+	GA
+		Genetisk algoritm
+		Genotypen kodar för vikter i nätet
+		Beräknar fitness baserat på data från siumleringen
+
+	Brain
+		Neuralt nät
+		Styr varelsen
+		Får sensordata från simuleringen
+		Ger instruktioner till effektorerna
+
+	Simulring
+		Phys2d
+		En varelse
+			Mask
+			Leder med begränsade maxvinklar
+			En sensor i varje led
+		Varelsen rör sig på en yta
+		Eventuellt hinder
+
 
 \section{Resultat}
 % Resultat innehållande sammanställning/analys av tester
