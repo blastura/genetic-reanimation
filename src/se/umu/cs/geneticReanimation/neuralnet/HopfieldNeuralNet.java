@@ -39,7 +39,7 @@ public class HopfieldNeuralNet implements Brain {
     }
     
     public double[] getGenotype() {
-        double[] result = new double[weightMatrix.length * 2];
+        double[] result = new double[(int) Math.pow(weightMatrix.length, 2)];
         int count = 0;
         for (double[] row : weightMatrix) {
             for (double value : row) {
@@ -100,8 +100,6 @@ public class HopfieldNeuralNet implements Brain {
             
             // For every neighbour in nodes put value * weight in tmpNodes
             for (int j = 0; j < lenght; j++) {
-                //System.out.println("weightMatrix[i][j]: " + weightMatrix[i][j]);
-                System.out.println("nodes[j]: " + nodes[j]);
                 tmpNodes[i] += nodes[j] * weightMatrix[i][j];
             }
         }
