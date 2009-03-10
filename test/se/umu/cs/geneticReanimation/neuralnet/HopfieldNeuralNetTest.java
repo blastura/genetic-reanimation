@@ -3,6 +3,7 @@ package se.umu.cs.geneticReanimation.neuralnet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -85,12 +86,17 @@ public class HopfieldNeuralNetTest {
     
     @Test
     public void testOutput() {
-        double[] genotype = {1.0, 0.8,   0.3,   0.234,
-                             1.0, 0.8,   0.3,   0.234,
-                             1.0, 0.8,   0.3,   0.234,
-                             1.0, 0.234, 0.346, 0.634};
+        Random r = new Random();
+        double[] genotype = new double[36];
+        for (int i = 0, length = genotype.length; i < length; i++) {
+            genotype[i] = r.nextDouble() * 2 - 1;
+        }
+        
+        
+        //         double[] genotype = {1.0, 0.0,
+        //                              1.0, 0.0};
         HopfieldNeuralNet nn = new HopfieldNeuralNet(genotype);
-        double[] inputs = {-1.0, 23.0};
+        double[] inputs = {-1.0, 23.0, -27, 1};
         nn.setInputs(inputs);
         
         for (int i = 0; i < 100; i++) {
