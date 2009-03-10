@@ -71,11 +71,46 @@ public class HopfieldNeuralNetTest {
     @Test
     public void testSetGenotype() {
         //double[][] w = {{1.0, 1.0}, {1.0, 1.0}};
-        double[] genotype = {1.0, 1.0, 2.0, 1.0};
-        nn.setGenotype(genotype);
+        double[] genotype = {1.0, 2.0, 3.0, 4.0};
+        
+        HopfieldNeuralNet nn = new HopfieldNeuralNet(genotype);
+        //nn.setGenotype(genotype);
         // TODO: verify
-        System.out.println(nn.getGenotype().toString());
+        double[] result = nn.getGenotype();
+        assertEquals(1.0, result[0], tolerance);
+        assertEquals(2.0, result[1], tolerance);
+        assertEquals(3.0, result[2], tolerance);
+        assertEquals(4.0, result[3], tolerance);
     }
+    
+    @Test
+    public void testOutput() {
+        double[] genotype = {1.0, 0.0,
+                             1.0, 0.0};
+        HopfieldNeuralNet nn = new HopfieldNeuralNet(genotype);
+        double[] inputs = {1.0, 0.0};
+        nn.setInputs(inputs);
+        
+        for (int i = 0; i < 1000; i++) {
+            nn.step();
+        }
+        
+        System.out.println("Genotype = [");
+        for (double val : nn.getGenotype()) {
+            System.out.println(val + ", ");
+        }
+        System.out.println("]");
+
+        
+        System.out.println("Output = [");
+        for (double val : nn.getOutputs()) {
+            System.out.println(val + ", ");
+        }
+        System.out.println("]");
+        
+        System.out.println("sigm(sigm(1)): " + nn.sigmoid(nn.sigmoid(1)));
+    }
+    
     
     @Test
     public void testSigmoid() {

@@ -1,7 +1,7 @@
 * Genetic ReAnimation
   This repocitory will contain an attempt to evolve a natural looking
   walking creature.
-  
+
 * Recurrent neural network
   Connections between nodes in a neural network can be bidirected.
   

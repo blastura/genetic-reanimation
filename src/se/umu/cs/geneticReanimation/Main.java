@@ -29,51 +29,51 @@ public class Main extends PApplet {
     private Dog dog;
     private GeneticAlgoritm ga;
     private List<Creature> population;
-    
+
     // Parameters
     private int genoLength;
     private int populationSize;
     private double crossoverRate;
     private double mutationRate;
-    
+
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.Main" }); // "--present"
     }
 
     @Override
     public void setup() {
-    	//setup population
-        createPopulation();
-        ga = new GeneticAlgoritm(genoLength, populationSize, crossoverRate, mutationRate);
-        
+        //setup population
         setupWorld();
+        ga = new GeneticAlgoritm(world, populationSize, crossoverRate, mutationRate);
+        createPopulation();
+
         //setupDog();
         smooth();
     }
 
     private void setupDog() {
-		dog = new Dog(world);
-	}
+        dog = new Dog(world);
+    }
 
-	public void setupWorld() {
-		world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
+    public void setupWorld() {
+        world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
         size(1600 / 2, 1000 / 2);
-		world.clear();
-		
+        world.clear();
+
         //Add ground
         Body body1;
         body1 = new StaticBody("Ground", new Box(width * 2, 100));
         body1.setPosition(width / 2, height - 10);
         world.add(body1);
     }
-    
-	/**
-	 * Creates new population
-	 */
-	private void createPopulation() {
-		this.population = ga.createPopulation();
-	}
-	
+
+    /**
+     * Creates new population
+     */
+    private void createPopulation() {
+        this.population = ga.createPopulation();
+    }
+
     @Override
     public void mousePressed() {
         //         float random1 = (-1 + random(2)) * 100;
@@ -88,11 +88,11 @@ public class Main extends PApplet {
         // Reposition center
         pushMatrix();
         translate(width / 2, 0);
-        
+
         // If you do one step() per draw, it's totally slow-mo.
         // so we are doing 8. Adjust to taste.
         for (int i=0; i < 8; i++) world.step();
-        
+
         simulationStep();
 
         background(255);
@@ -106,28 +106,28 @@ public class Main extends PApplet {
         JointList joints = world.getJoints();
         for (int i=0;i<joints.size();i++) {
             Joint joint = joints.get(i);
-            
+
             drawJoint(joint);
         }
         popMatrix();
     }
 
-  
-    
-    
-    private void simulationStep() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	/** render each physics body based on what shape it is */
+
+
+    private void simulationStep() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /** render each physics body based on what shape it is */
     private void drawBody(Body body) {
         if (body.getShape() instanceof Circle) {
             drawCircleBody(body, (Circle)body.getShape());
         } else if (body.getShape() instanceof Line) {
             drawLineBody(body,(Line) body.getShape());
         } else if (body.getShape() instanceof Box) {
-            drawBoxBody(body, (Box) body.getShape());            
+            drawBoxBody(body, (Box) body.getShape());
         }
         else {
             throw new IllegalArgumentException("You need a draw method for this shape");
@@ -148,7 +148,7 @@ public class Main extends PApplet {
     private void drawCircleBody(Body body, Circle circle) {
         float r = circle.getRadius();
         float rot = body.getRotation();
-        
+
         pushMatrix();
         translate(body.getPosition().getX(), body.getPosition().getY());
         rotate(rot);
@@ -173,7 +173,7 @@ public class Main extends PApplet {
     protected void drawBoxBody(Body body, Box box) {
         stroke(0, 0, 0);
         strokeWeight(1);
-        
+
         Vector2f[] pts = box.getPoints(body.getPosition(), body.getRotation());
 
         Vector2f v1 = pts[0];
@@ -189,96 +189,96 @@ public class Main extends PApplet {
 
     /**
      * TODO: Copied and edited from AbstractDemo
-     * Draw a joint 
-     * 
+     * Draw a joint
+     *
      * @param g The graphics contact on which to draw
      * @param j The joint to be drawn
      */
     public void drawJoint(Joint j) {
         if (j instanceof FixedJoint) {
             FixedJoint joint = (FixedJoint) j;
-			
+
             stroke(255, 0, 0);
             float x1 = joint.getBody1().getPosition().getX();
             float x2 = joint.getBody2().getPosition().getX();
             float y1 = joint.getBody1().getPosition().getY();
             float y2 = joint.getBody2().getPosition().getY();
-			
+
             line((int) x1,(int) y1,(int) x2,(int) y2);
         }
-        
+
         if (j instanceof SlideJoint){
             SlideJoint joint = (SlideJoint) j;
-			
+
             Body b1 = joint.getBody1();
             Body b2 = joint.getBody2();
-	
+
             Matrix2f R1 = new Matrix2f(b1.getRotation());
             Matrix2f R2 = new Matrix2f(b2.getRotation());
-	
+
             ROVector2f x1 = b1.getPosition();
             Vector2f p1 = MathUtil.mul(R1,joint.getAnchor1());
             p1.add(x1);
-	
+
             ROVector2f x2 = b2.getPosition();
             Vector2f p2 = MathUtil.mul(R2,joint.getAnchor2());
             p2.add(x2);
-			
+
             Vector2f im = new Vector2f(p2);
             im.sub(p1);
             im.normalise();
-			
-			
-			
+
+
+
             stroke(255, 0, 0);
             line((int)p1.x,(int)p1.y,(int)(p1.x+im.x*joint.getMinDistance()),(int)(p1.y+im.y*joint.getMinDistance()));
             stroke(0, 255, 0);
             line((int)(p1.x+im.x*joint.getMinDistance()),(int)(p1.y+im.y*joint.getMinDistance()),(int)(p1.x+im.x*joint.getMaxDistance()),(int)(p1.y+im.y*joint.getMaxDistance()));
         }
-        
+
         if (j instanceof AngleJoint){
             AngleJoint angleJoint = (AngleJoint)j;
             Body b1 = angleJoint.getBody1();
             Body b2 = angleJoint.getBody2();
             float RA = j.getBody1().getRotation() + angleJoint.getRotateA();
             float RB = j.getBody1().getRotation() + angleJoint.getRotateB();
-			
+
             Vector2f VA = new Vector2f((float) Math.cos(RA), (float) Math.sin(RA));
             Vector2f VB = new Vector2f((float) Math.cos(RB), (float) Math.sin(RB));
-			
+
             Matrix2f R1 = new Matrix2f(b1.getRotation());
             Matrix2f R2 = new Matrix2f(b2.getRotation());
-			
+
             ROVector2f x1 = b1.getPosition();
             Vector2f p1 = MathUtil.mul(R1,angleJoint.getAnchor1());
             p1.add(x1);
-	
+
             ROVector2f x2 = b2.getPosition();
             Vector2f p2 = MathUtil.mul(R2,angleJoint.getAnchor2());
             p2.add(x2);
-			
+
             stroke(0, 255, 0);
             line((int)p1.x,(int)p1.y,(int)(p1.x+VA.x*20),(int)(p1.y+VA.y*20));
             line((int)p1.x,(int)p1.y,(int)(p1.x+VB.x*20),(int)(p1.y+VB.y*20));
         }
-        
+
         if (j instanceof BasicJoint) {
             BasicJoint joint = (BasicJoint) j;
-			
+
             Body b1 = joint.getBody1();
             Body b2 = joint.getBody2();
-	
+
             Matrix2f R1 = new Matrix2f(b1.getRotation());
             Matrix2f R2 = new Matrix2f(b2.getRotation());
-	
+
             ROVector2f x1 = b1.getPosition();
             Vector2f p1 = MathUtil.mul(R1,joint.getLocalAnchor1());
             p1.add(x1);
-	
+
             ROVector2f x2 = b2.getPosition();
             Vector2f p2 = MathUtil.mul(R2,joint.getLocalAnchor2());
             p2.add(x2);
-	
+
             stroke(255, 0, 0);
             line((int) x1.getX(), (int) x1.getY(), (int) p1.x, (int) p1.y);
             line((int) p1.x, (int) p1.y, (int) x2.getX(), (int) x2.getY());
@@ -287,41 +287,41 @@ public class Main extends PApplet {
         }
         if(j instanceof DistanceJoint){
             DistanceJoint joint = (DistanceJoint) j;
-			
+
             Body b1 = joint.getBody1();
             Body b2 = joint.getBody2();
-	
+
             Matrix2f R1 = new Matrix2f(b1.getRotation());
             Matrix2f R2 = new Matrix2f(b2.getRotation());
-	
+
             ROVector2f x1 = b1.getPosition();
             Vector2f p1 = MathUtil.mul(R1,joint.getAnchor1());
             p1.add(x1);
-	
+
             ROVector2f x2 = b2.getPosition();
             Vector2f p2 = MathUtil.mul(R2,joint.getAnchor2());
             p2.add(x2);
-			
+
             stroke(255, 0, 0);
             line((int) p1.getX(), (int) p1.getY(), (int) p2.x, (int) p2.y);
         }
         if (j instanceof SpringJoint) {
             SpringJoint joint = (SpringJoint) j;
-			
+
             Body b1 = joint.getBody1();
             Body b2 = joint.getBody2();
-	
+
             Matrix2f R1 = new Matrix2f(b1.getRotation());
             Matrix2f R2 = new Matrix2f(b2.getRotation());
-	
+
             ROVector2f x1 = b1.getPosition();
             Vector2f p1 = MathUtil.mul(R1,joint.getLocalAnchor1());
             p1.add(x1);
-	
+
             ROVector2f x2 = b2.getPosition();
             Vector2f p2 = MathUtil.mul(R2,joint.getLocalAnchor2());
             p2.add(x2);
-			
+
             stroke(255, 0, 0);
             line((int) x1.getX(), (int) x1.getY(), (int) p1.x, (int) p1.y);
             line((int) p1.x, (int) p1.y, (int) p2.getX(), (int) p2.getY());
@@ -332,7 +332,7 @@ public class Main extends PApplet {
     public Vector2f getMidPosition(Body b1, Body b2) {
         Vector2f v1 = (Vector2f) b1.getPosition();
         Vector2f v2 = (Vector2f) b2.getPosition();
-            
+
         // TODO: check calculations for lines where x1 != x2 or y1 != y2
         float dx = v1.x - v2.x;
         float dy = v1.y - v2.y;

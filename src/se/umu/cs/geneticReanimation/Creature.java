@@ -1,6 +1,7 @@
 package se.umu.cs.geneticReanimation;
 
-public interface Creature extends Cloneable {
+// Extend Clonable?
+public interface Creature {
     public double getFitness();
 
     public void setFitness(double fitness);
