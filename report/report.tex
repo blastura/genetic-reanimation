@@ -142,17 +142,30 @@ I sina försök använder Sims en GA för att optimera både struktur och vikter
 % Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna
 % reproducera ert arbete
 
-\begin{verbatim}
-Systemöversikt
-	GA
-		Genetisk algoritm
-		Selektionsmetoder
-			Tournamentselection, 3
-			Återläggning
-		Genotypen kodar för vikter i nätet
-		Beräknar fitness baserat på data från siumleringen
+\section{Systemöversikt}
+	Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och Fysiksimuleringen. 
 
-	Brain
+	\subsection{GA}
+	
+
+		För selektion används en variant på tournament selection. Två grupper om tre individer väljs slumpmässigt och de med högst fitness ur respektive grupp korsas så två nya varelser med en blandning av deras genotyp skapas. Detta upprepas så en ny population av halva storleken skapas. Därefter väljs fler grupper av tre där de bästa direkt går till den nya populationen oförändrade tills den nya populationen har samma storlek som den gamla. Varje individ i den nya populationen muterar varje del av sin genotyp med en viss sannolikhet. Den nya populationen ersätter därefter den gamla. 
+		
+		Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärna. För att evaluera fitness för varje individ skapas ett nät med de vikter genotypen anger, detta får sedan under en begränsad tid styra en fast kropp i en fysiksimulering. Fitness beräknas på hur långt kroppen lyckats röra sig.
+		
+
+		%Genetisk algoritm
+		%Selektionsmetoder
+		%	Tournamentselection, 3
+		%	Återläggning
+		%Genotypen kodar för vikter i nätet
+		%Beräknar fitness baserat på data från siumleringen
+
+	\subsection{Hjärnan}
+		Hjärnan består av ett neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
+
+		Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1. 
+
+		
 		Neuralt nät
 		Styr varelsen
 		Får sensordata från simuleringen
