@@ -161,7 +161,7 @@ I sina försök använder Sims en GA för att optimera både struktur och vikter
 		%Beräknar fitness baserat på data från siumleringen
 
 	\subsection{Hjärnan}
-		Hjärnan består av ett neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
+		Hjärnan består av ett hopfield neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
 
 		Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1. 
 
@@ -171,7 +171,12 @@ I sina försök använder Sims en GA för att optimera både struktur och vikter
 		%Får sensordata från simuleringen
 		%Ger instruktioner till effektorerna
 
-	%Simulring
+	\subsection{Simulering}
+		
+		Fysiksimuleringen använder biblioteket phys2d för själva fysiken. I simuleringen har ett markplan skapats och på detta en varelse. 
+
+		Varelsen består av en mask med 5 leder. Varje led kan röra sig 180 grader. 
+
 		%Phys2d
 		%En varelse
 		%	Mask
