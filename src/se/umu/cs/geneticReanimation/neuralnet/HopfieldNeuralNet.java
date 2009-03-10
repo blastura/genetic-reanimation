@@ -16,7 +16,6 @@ public class HopfieldNeuralNet implements Brain {
         this.weightMatrix = new double[size][size];
         // TODO: create random weights
         this.nodes = new double[size];
-        this.inputs = new double[size];
     }
 
     public void setGenotype(final double[] genotype) {
@@ -68,6 +67,9 @@ public class HopfieldNeuralNet implements Brain {
 
     public void setInputs(final double[] inputs) {
         if (this.inputs == null) {
+            if (inputs.length > nodes.length) {
+                throw new IllegalArgumentException("Input can't be longer than nodes.length");
+            }
             this.inputs = new double[inputs.length];
         }
         
