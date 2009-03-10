@@ -132,6 +132,8 @@
 % Introduktion till ämnet, inklusive översikt av tidigare studier
 % \cite{flake}
 
+I detta projekt har vi undersökt om en genetisk algoritm kan hitta rörelsemönster för en enkel varelse med hjälp av ett neuralt nät som hjärna. 
+
 \subsection{Karl Sims}
 Karl Sims utforskar i Evolvig Virtual Creatures \cite{sims} både hur varelsers form och deras beteenden kan utvecklas med hjälp av genetiska algoritmer (GA). Varelserna har sensorer och effektorer som är kopplade till in och utnoder i ett neuralat nät. 
 
@@ -143,47 +145,23 @@ I sina försök använder Sims en GA för att optimera både struktur och vikter
 % reproducera ert arbete
 
 \section{Systemöversikt}
-	Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och Fysiksimuleringen. 
+Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och Fysiksimuleringen. 
 
 	\subsection{GA}
-	
-
-		För selektion används en variant på tournament selection. Två grupper om tre individer väljs slumpmässigt och de med högst fitness ur respektive grupp korsas så två nya varelser med en blandning av deras genotyp skapas. Detta upprepas så en ny population av halva storleken skapas. Därefter väljs fler grupper av tre där de bästa direkt går till den nya populationen oförändrade tills den nya populationen har samma storlek som den gamla. Varje individ i den nya populationen muterar varje del av sin genotyp med en viss sannolikhet. Den nya populationen ersätter därefter den gamla. 
+	För selektion används en variant på tournament selection. Två grupper om tre individer väljs slumpmässigt och de med högst fitness ur respektive grupp korsas så två nya varelser med en blandning av deras genotyp skapas. Detta upprepas så en ny population av halva storleken skapas. Därefter väljs fler grupper av tre där de bästa direkt går till den nya populationen oförändrade tills den nya populationen har samma storlek som den gamla. Varje individ i den nya populationen muterar varje del av sin genotyp med en viss sannolikhet. Den nya populationen ersätter därefter den gamla. 
 		
-		Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärna. För att evaluera fitness för varje individ skapas ett nät med de vikter genotypen anger, detta får sedan under en begränsad tid styra en fast kropp i en fysiksimulering. Fitness beräknas på hur långt kroppen lyckats röra sig.
+	Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärna. För att evaluera fitness för varje individ skapas ett nät med de vikter genotypen anger, detta får sedan under en begränsad tid styra en fast kropp i en fysiksimulering. Fitness beräknas på hur långt kroppen lyckats röra sig.
 		
-
-		%Genetisk algoritm
-		%Selektionsmetoder
-		%	Tournamentselection, 3
-		%	Återläggning
-		%Genotypen kodar för vikter i nätet
-		%Beräknar fitness baserat på data från siumleringen
-
 	\subsection{Hjärnan}
-		Hjärnan består av ett hopfield neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
+	Hjärnan består av ett hopfield neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
 
-		Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1. 
-
-		
-		%Neuralt nät
-		%Styr varelsen
-		%Får sensordata från simuleringen
-		%Ger instruktioner till effektorerna
+	Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1. 
 
 	\subsection{Simulering}
 		
-		Fysiksimuleringen använder biblioteket phys2d för själva fysiken. I simuleringen har ett markplan skapats och på detta en varelse. 
+	Fysiksimuleringen använder biblioteket phys2d för själva fysiken. I simuleringen har ett markplan skapats och på detta en varelse. 
 
-		Varelsen består av en mask med 5 leder. Varje led kan röra sig 180 grader. 
-
-		%Phys2d
-		%En varelse
-		%	Mask
-		%	Leder med begränsade maxvinklar
-		%	En sensor i varje led
-		%Varelsen rör sig på en yta
-		%Eventuellt hinder
+	Varelsen består av en mask med 5 leder. Varje led kan röra sig 180 grader. Varje led har en sensor som ger Hjärnan input om dess vinkel. 
 
 \section{Resultat}
 % Resultat innehållande sammanställning/analys av tester
