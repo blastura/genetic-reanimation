@@ -24,55 +24,22 @@ import net.phys2d.raw.shapes.Line;
 import net.phys2d.raw.strategies.QuadSpaceStrategy;
 import processing.core.*;
 
-public class Main extends PApplet {
-    private World world;
-    private Dog dog;
-    private GeneticAlgoritm ga;
-    private List<Creature> population;
-
-    // Parameters
-    private int genoLength;
-    private int populationSize;
-    private double crossoverRate;
-    private double mutationRate;
-
+public class ProcessingView extends PApplet{
+    
+	private Simulation s;
+	
     public static void main(String args[]) {
-        PApplet.main(new String[] {"se.umu.cs.geneticReanimation.Main" }); // "--present"
+        PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView" }); // "--present"
     }
-
+	
     @Override
     public void setup() {
-        //setup population
-        setupWorld();
-        ga = new GeneticAlgoritm(world, populationSize, crossoverRate, mutationRate);
-        createPopulation();
-
-        //setupDog();
+    	this.s = new Simulation(this);
+    	println("Processing starts...");
         smooth();
+        new Thread(s).start();
     }
 
-    private void setupDog() {
-        dog = new Dog(world);
-    }
-
-    public void setupWorld() {
-        world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
-        size(1600 / 2, 1000 / 2);
-        world.clear();
-
-        //Add ground
-        Body body1;
-        body1 = new StaticBody("Ground", new Box(width * 2, 100));
-        body1.setPosition(width / 2, height - 10);
-        world.add(body1);
-    }
-
-    /**
-     * Creates new population
-     */
-    private void createPopulation() {
-        this.population = ga.createPopulation();
-    }
 
     @Override
     public void mousePressed() {
@@ -85,15 +52,11 @@ public class Main extends PApplet {
 
     @Override
     public void draw() {
+    	World world = s.getWorld();
+    	
         // Reposition center
         pushMatrix();
         translate(width / 2, 0);
-
-        // If you do one step() per draw, it's totally slow-mo.
-        // so we are doing 8. Adjust to taste.
-        for (int i=0; i < 8; i++) world.step();
-
-        simulationStep();
 
         background(255);
 
@@ -112,13 +75,6 @@ public class Main extends PApplet {
         popMatrix();
     }
 
-
-
-
-    private void simulationStep() {
-        // TODO Auto-generated method stub
-
-    }
 
     /** render each physics body based on what shape it is */
     private void drawBody(Body body) {

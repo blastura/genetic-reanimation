@@ -75,7 +75,7 @@ public class WormCreature implements Creature {
 
                 saj[i-1] = new SpringyAngleJoint(prev_segment, segment,
                                                  fixpoint1, fixpoint2, 1000f, 0f);
-                world.add(saj[i-1]);
+                jointList.add(saj[i-1]);
             }
         }
     }

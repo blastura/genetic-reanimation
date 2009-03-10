@@ -4,16 +4,14 @@ import java.util.*;
 import net.phys2d.raw.World;
 
 public class GeneticAlgoritm {
-    private World world;
     private int populationSize;
     private double crossoverRate;
     private double mutationRate;
     private List<Creature> population;
 
 
-    public GeneticAlgoritm (World world, int populationSize,
+    public GeneticAlgoritm (int populationSize,
                             double crossoverRate, double mutationRate) {
-        this.world = world;
         this.populationSize = populationSize;
         this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
@@ -24,7 +22,7 @@ public class GeneticAlgoritm {
      * @param popSize int for size of the new population
      * @return a List of the new population
      */
-    public List createPopulation(){
+    public List<Creature> createPopulation(){
         population = new ArrayList<Creature>();
         for (int i = 1; i<=populationSize; i++) {
             population.add(createNewCreature());
