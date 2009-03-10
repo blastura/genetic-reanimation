@@ -25,11 +25,8 @@ import processing.core.*;
 
 public class Test extends PApplet {
     private World world = new World(new Vector2f(0.0f, 10.0f), 20, new QuadSpaceStrategy(20,5));
-    private Body leftLeg;
-    private Body rightLeg;
-	private SpringJoint rightLegSpring;
-	private SpringJoint rightLegSpring2;
-    
+    private SpringyAngleJoint[] saj;
+
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.Test" }); // "--present"
     }
@@ -50,22 +47,24 @@ public class Test extends PApplet {
         body1.setPosition(width / 2, height - 10);
         world.add(body1);
        
-	   	body1 = new Body("plopp", new Circle(60f), 10);
+	   	body1 = new Body("plopp", new Circle(30f), 10);
 		body1.setPosition(50,300);
-		world.add(body1);
+		//world.add(body1);
 
         // Make schneyk
         float sWidth = 20f;
         float sHeight = 10f;
         float spaceing = 10f;
         int sections = 5;
+
+		saj = new SpringyAngleJoint[sections-1];
 		
 		Body segment = null;
 		Body prev_segment;
 
         for(int i=0; i<sections; i++) {
 			prev_segment = segment;
-			segment = new Body("Segment", new Box(sWidth, sHeight), 10);
+			segment = new Body("Segment", new Box(sWidth, sHeight), 1);
         	segment.setPosition((sWidth + spaceing)*i, 0);
         	world.add(segment);
 			if(i > 0) {
@@ -74,8 +73,8 @@ public class Test extends PApplet {
 				DistanceJoint dj = new DistanceJoint(prev_segment, segment, fixpoint1, fixpoint2, spaceing);
 				world.add(dj);
 				
-				SpringyAngleJoint saj = new SpringyAngleJoint(prev_segment, segment, fixpoint1, fixpoint2, 50000f, 0f);
-				world.add(saj);
+				saj[i-1] = new SpringyAngleJoint(prev_segment, segment, fixpoint1, fixpoint2, 1000f, 0f);
+				world.add(saj[i-1]);
 
 			}
 		}	
@@ -87,10 +86,7 @@ public class Test extends PApplet {
         //         float random2  = (-1 + random(2)) * 1000;
         //leftLeg.addForce(new Vector2f(mouseX * 100, mouseY * 100)); leftLeg.adjustAngularVelocity(- (mouseX - (width / 2)));
         //println(random1 + ", " + random2);
-
-		rightLegSpring.setSpringSize((mouseX)/5);
-		System.out.println(rightLegSpring.getSpringSize());
-
+		saj[0].setOriginalAngle((float)((mouseX*Math.PI/800)));
     }
 
     @Override
