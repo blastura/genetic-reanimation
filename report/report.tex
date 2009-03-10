@@ -40,7 +40,7 @@
 
 % vars
 \def\title{Genetisk animation; rörelsemönster i 2D mha neuralt nät och genetisk algoritm}
-\def\preTitle{}
+\def\preTitle{Projekt}
 \def\kurs{Emergenta system, 5DV017}
 
 \def\namn{Andreas Jakobsson}
@@ -133,19 +133,22 @@
 % \cite{flake}
 
 \subsection{Karl Sims}
-Karl Sims utforskar i Evolvig Virtual Creatures både hur varelsers form och deras beteenden kan utvecklas med hjälp av genetiska algoritmer (GA). Varelserna har sensorer och effektorer som är kopplade till in och utnoder i ett neuralat nät. 
+Karl Sims utforskar i Evolvig Virtual Creatures \cite{sims} både hur varelsers form och deras beteenden kan utvecklas med hjälp av genetiska algoritmer (GA). Varelserna har sensorer och effektorer som är kopplade till in och utnoder i ett neuralat nät. 
 
-I sina försök använder Sims en GA för att optimera både struktur och vikter i det neurala nätet. Det nät han använder har i varje nod en av många matematiska funktioner; exempelvis sinus, summa, produkt, max, osv. 
+I sina försök använder Sims en GA för att optimera både struktur och vikter i det neurala nätet. Det nät han använder har i varje nod en av många matematiska funktioner; exempelvis sinus, summa, produkt, max, osv. Sims lät sina försök köra mellan 50 och 100 generationer och optimerade mot olika typer av beteenden som ex gång, simmande och hoppande rörelser. 
 
 
 \section{Metodbeskrivning}
 % Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna
 % reproducera ert arbete
 
-
+\begin{verbatim}
 Systemöversikt
 	GA
 		Genetisk algoritm
+		Selektionsmetoder
+			Tournamentselection, 3
+			Återläggning
 		Genotypen kodar för vikter i nätet
 		Beräknar fitness baserat på data från siumleringen
 
@@ -163,7 +166,7 @@ Systemöversikt
 			En sensor i varje led
 		Varelsen rör sig på en yta
 		Eventuellt hinder
-
+\end{verbatim}
 
 \section{Resultat}
 % Resultat innehållande sammanställning/analys av tester
