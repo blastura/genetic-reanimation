@@ -22,9 +22,9 @@ public class WormCreature implements Creature {
     
     public WormCreature(double[] genotype) {
         this.brain = new HopfieldNeuralNet(genotype);
-        initBody();
         this.bodyList = new ArrayList<Body>();
         this.jointList = new ArrayList<Joint>();
+        initBody();
     }
     
     public WormCreature() {
@@ -65,7 +65,7 @@ public class WormCreature implements Creature {
         for(int i = 0; i < sections; i++) {
             prev_segment = segment;
             segment = new Body("Segment", new Box(sWidth, sHeight), 1);
-            segment.setPosition((sWidth + spaceing)*i, 0);
+            segment.setPosition((sWidth + spaceing)*i, 420);
             bodyList.add(segment);
             if(i > 0) {
                 Vector2f fixpoint1 = new Vector2f(sWidth/2f, 0);
@@ -111,6 +111,10 @@ public class WormCreature implements Creature {
     public double[] getGenotype() {
         return brain.getGenotype();
     }
+
+	public double getXPosition() {
+		return (double)bodyList.get(bodyList.size()-1).getPosition().getX();
+	}
 
     private Vector2f getMidPosition(Body b1, Body b2) {
         Vector2f v1 = (Vector2f) b1.getPosition();

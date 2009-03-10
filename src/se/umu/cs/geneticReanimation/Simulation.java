@@ -12,14 +12,14 @@ import net.phys2d.raw.strategies.QuadSpaceStrategy;
 public class Simulation implements Runnable {
 
     // Constants
-    private final int NROFGENERATIONS = 1;
+    private final int NROFGENERATIONS = 5;
     private final int POPULATIONSIZE = 15;
-    private final double CROSSOVERRATE = 0;
-    private final double MUTATIONRATE = 0;
+    private final double CROSSOVERRATE = 0.5;
+    private final double MUTATIONRATE = 0.1;
     private final int LIFESPAN = 1000;
     
     private final boolean DRAW_GUI = true;
-    private final int FPS = 60;
+    private final int FPS = 600;
     
     private ProcessingView view;
     private World world;
@@ -64,6 +64,7 @@ public class Simulation implements Runnable {
                 addGround();
             }
             System.out.println("Generation " + (i+1) + " is done.");
+			this.population = ga.createNextGeneration(this.population);
         }
         System.out.println("Simulation ended.");
     }
@@ -73,8 +74,9 @@ public class Simulation implements Runnable {
     }
 
     private void calculateFitness(Creature creature) {
-        // TODO Auto-generated method stub
-
+		double fitness = creature.getXPosition();
+		System.out.println("Fitness: " + fitness);
+		creature.setFitness(fitness);
     }
 
     private void simulate(Creature creature) {

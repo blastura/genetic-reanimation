@@ -37,32 +37,32 @@ public class GeneticAlgoritm {
      * @return
      */
     public List createNextGeneration(List oldPopulation) {
-        oldPopulation = population;
+        population = oldPopulation;
         ArrayList newPopulation = new ArrayList<Creature>();
 
         Creature parent1;
         Creature parent2;
-        int index = 0;
-        for (int i = 0; i <=(populationSize*crossoverRate); i++) {
+        for (int i = 0; i <= (populationSize*crossoverRate); i+=2) {
             parent1 = tournamentSelection();
             parent2 = tournamentSelection();
             newPopulation.add(crossover(parent1, parent2));
             newPopulation.add(crossover(parent2, parent1));
-            index = i;
+			System.out.println("Crossover");
         }
 
-        for (int i = index; i<=(populationSize); i++) {
+        for (int i = newPopulation.size(); i < populationSize; i++) {
             parent1 = tournamentSelection();
-            parent2 = tournamentSelection();
             newPopulation.add(parent1);
-            newPopulation.add(parent2);
+			System.out.println("Extra");
         }
 
-        for (int i = 0; i>populationSize; i++) {
+        for (int i = 0; i < populationSize; i++) {
             mutate((Creature)newPopulation.get(i));
+			System.out.println("Mutate");
         }
 
         population = newPopulation;
+		System.out.println(population.size());
         return population;
     }
 
