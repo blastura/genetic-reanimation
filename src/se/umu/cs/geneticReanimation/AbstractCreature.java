@@ -14,6 +14,10 @@ public class AbstractCreature implements Creature {
         this.brain = new HopfieldNeuralNet(genotype);
     }
 
+    public void  act() {
+        //TODO:
+    }
+    
     public double getFitness() {
         return this.fitness;
     }
