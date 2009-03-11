@@ -65,7 +65,7 @@ public class WormCreature implements Creature {
         for(int i = 0; i < sections; i++) {
             prev_segment = segment;
             segment = new Body("Segment", new Box(sWidth, sHeight), 1);
-            segment.setPosition((sWidth + spaceing)*i-340, 420);
+            segment.setPosition((sWidth + spaceing)*i-360, 420);
             bodyList.add(segment);
             if(i > 0) {
                 Vector2f fixpoint1 = new Vector2f(sWidth/2f, 0);

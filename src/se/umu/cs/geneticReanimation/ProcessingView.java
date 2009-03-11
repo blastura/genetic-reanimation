@@ -50,24 +50,28 @@ public class ProcessingView extends PApplet{
 
     @Override
     public void draw() {
-        World world = s.getWorld();
+		try {
+        	World world = s.getWorld();
         
-        // Reposition center
-        pushMatrix();
-        translate(width / 2, 0);
+        	// Reposition center
+        	pushMatrix();
+        	translate(width / 2, 0);
 
-        background(255);
+        	background(255);
 
-        BodyList bodies = world.getBodies();
-        for (int i = 0, length = bodies.size(); i < length; i++) {
-            drawBody(bodies.get(i));
-        }
+        	BodyList bodies = world.getBodies();
+        	for (int i = 0, length = bodies.size(); i < length; i++) {
+        	    drawBody(bodies.get(i));
+       		}
 
-        JointList joints = world.getJoints();
-        for (int i = 0, length = joints.size(); i < length; i++) {
-            drawJoint(joints.get(i));
-        }
-        popMatrix();
+        	JointList joints = world.getJoints();
+        	for (int i = 0, length = joints.size(); i < length; i++) {
+        	    drawJoint(joints.get(i));
+        	}
+        	popMatrix();
+		} catch (IndexOutOfBoundsException e) {
+		
+		}
     }
 
 

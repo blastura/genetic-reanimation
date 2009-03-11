@@ -12,8 +12,8 @@ import net.phys2d.raw.strategies.QuadSpaceStrategy;
 public class Simulation implements Runnable {
 
     // Constants
-    private final int NROFGENERATIONS = 5;
-    private final int POPULATIONSIZE = 15;
+    private final int NROFGENERATIONS = 50;
+    private final int POPULATIONSIZE = 20;
     private final double CROSSOVERRATE = 0.5;
     private final double MUTATIONRATE = 0.1;
     private final int LIFESPAN = 1000;
