@@ -83,6 +83,7 @@ public class Simulation implements Runnable {
     }
 
     private void simulate(Creature creature) {
+		System.out.println("Simulating: " + encode(creature.getGenotype()));
         for (int step=0; step < LIFESPAN; step++) {
             world.step();
             creature.act();
@@ -96,6 +97,13 @@ public class Simulation implements Runnable {
                 view.redraw();                
             }
         }
-        System.out.println("Life ended...");
     }
+
+	private String encode(double[] genotype) {
+		String s = "";
+		for(double d : genotype) {
+			s += String.valueOf(d) + " ";
+		}
+		return s;
+	}
 }
