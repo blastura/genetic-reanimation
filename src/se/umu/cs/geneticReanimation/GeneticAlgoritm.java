@@ -37,7 +37,7 @@ public class GeneticAlgoritm {
      * @return
      */
     public List createNextGeneration(List oldPopulation) {
-        population = oldPopulation;
+        this.population = oldPopulation;
         ArrayList newPopulation = new ArrayList<Creature>();
 
         Creature parent1;
@@ -47,18 +47,16 @@ public class GeneticAlgoritm {
             parent2 = tournamentSelection();
             newPopulation.add(crossover(parent1, parent2));
             newPopulation.add(crossover(parent2, parent1));
-			System.out.println("Crossover");
         }
 
         for (int i = newPopulation.size(); i < populationSize; i++) {
             parent1 = tournamentSelection();
-            newPopulation.add(parent1);
-			System.out.println("Extra");
+			Creature newParent = new WormCreature(parent1.getGenotype());
+            newPopulation.add(newParent);
         }
 
         for (int i = 0; i < populationSize; i++) {
             mutate((Creature)newPopulation.get(i));
-			System.out.println("Mutate");
         }
 
         population = newPopulation;
@@ -73,6 +71,7 @@ public class GeneticAlgoritm {
                 genotype[i]= genotype[i] + (Math.random()/2 - 0.5);
             }
         }
+		creature.setGenotype(genotype);
     }
 
     private Creature crossover(Creature parent1, Creature parent2) {
@@ -90,7 +89,7 @@ public class GeneticAlgoritm {
     private Creature tournamentSelection() {
         Creature bestParent = null;
         for (int i = 0; i<3; i++) {
-            Creature parent = population.get((int)Math.random()*populationSize);
+            Creature parent = population.get((int)(Math.random()*populationSize));
             if (bestParent == null || parent.getFitness() >= bestParent.getFitness()) {
                 bestParent = parent;
             }

@@ -10,4 +10,5 @@ public interface Creature {
     public void setFitness(double fitness);
 	public double getXPosition();
     public double[] getGenotype();
+	public void setGenotype(double[] genotype);
 }

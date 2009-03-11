@@ -49,6 +49,9 @@ public class Simulation implements Runnable {
         body1 = new StaticBody("Ground", new Box(view.width * 10, 100));
         body1.setPosition(view.width / 2, view.height - 10);
         world.add(body1);
+		body1 = new StaticBody("Wall", new Box(20, 300));
+		body1.setPosition(-view.width/2, view.height-200);
+		world.add(body1);
     }
 
     public void run() {
@@ -74,19 +77,15 @@ public class Simulation implements Runnable {
     }
 
     private void calculateFitness(Creature creature) {
-		double fitness = creature.getXPosition();
+		double fitness = creature.getXPosition()-120+360; // -worm length + worm startpos
 		System.out.println("Fitness: " + fitness);
 		creature.setFitness(fitness);
     }
 
     private void simulate(Creature creature) {
-        // If you do one step() per draw, it's totally slow-mo.
-        // so we are doing 8. Adjust to taste.
         for (int step=0; step < LIFESPAN; step++) {
             world.step();
             creature.act();
-            
-            // TODO: ? Createure speed is dependent on FPS
             if (DRAW_GUI) {
                 try {
                     long waitTime = 1000 / FPS;
