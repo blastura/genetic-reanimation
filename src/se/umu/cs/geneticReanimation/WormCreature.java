@@ -13,10 +13,13 @@ import se.umu.cs.geneticReanimation.neuralnet.Brain;
 import se.umu.cs.geneticReanimation.neuralnet.HopfieldNeuralNet;
 
 public class WormCreature implements Creature {
+	private final float MAX_ANGLE_STEP = (float)(Math.PI/10);
+
     private double fitness;
     private Brain brain;
     private List<Body> bodyList;
     private List<Joint> jointList;
+	
     // Effectors
     private SpringyAngleJoint[] saj;
     
@@ -75,16 +78,19 @@ public class WormCreature implements Creature {
                 jointList.add(dj);
 
                 saj[i-1] = new SpringyAngleJoint(prev_segment, segment,
-                                                 fixpoint1, fixpoint2, 1000f, 0f);
+                                                 fixpoint1, fixpoint2, 500f, 0f);
                 jointList.add(saj[i-1]);
             }
         }
+		segment.adjustAngularVelocity(0.5f);
     }
     
     public void act() {
-        double[] inputs = new double[bodyList.size()];
+        double[] inputs = new double[bodyList.size()-1];
         for (int i = 0, length = inputs.length; i < length; i++) {
-            inputs[i] = bodyList.get(i).getPosition().getY();
+            float b1 = bodyList.get(i).getPosition().getY();
+            float b2 = bodyList.get(i+1).getPosition().getY();
+			inputs[i] = b1-b2;
         }
 
         brain.setInputs(inputs);
@@ -94,8 +100,14 @@ public class WormCreature implements Creature {
         
         // Affect worm
         for (int i = 0, length = outputs.length; i < length && i < saj.length; i++) {
-            // TODO: jointList out of bounds, warn or check?
-            saj[i].setOriginalAngle((float) ((outputs[i] * Math.PI)));
+			float angle = saj[i].getOriginalAngle();
+			float goal = (float)(outputs[i] * Math.PI);
+			if(goal > angle) {
+				angle += Math.min(MAX_ANGLE_STEP, goal-angle);
+			} else if (goal < angle) {
+				angle -= Math.min(MAX_ANGLE_STEP, angle-goal);
+			}
+            saj[i].setOriginalAngle(angle);
         }
     }
     

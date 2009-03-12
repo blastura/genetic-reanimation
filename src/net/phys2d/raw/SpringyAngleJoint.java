@@ -97,6 +97,10 @@ public class SpringyAngleJoint implements Joint {
 		this.originalAngle = angle;
 	}
 
+	public float getOriginalAngle() {
+		return this.originalAngle;
+	}
+
 	/**
 	 * @see net.phys2d.raw.Joint#getBody1()
 	 */
