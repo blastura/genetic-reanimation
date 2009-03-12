@@ -23,6 +23,7 @@ import processing.core.*;
 public class ProcessingView extends PApplet{
 
     private Simulation s;
+	private boolean recording = false;
 
     public static void main(String args[]) {
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView" }); // "--present"
@@ -39,6 +40,10 @@ public class ProcessingView extends PApplet{
         noLoop();
     }
 
+	public void setRecording(boolean b) {
+		this.recording  = b;
+	}
+	
     @Override
     public void mousePressed() {
         //         float random1 = (-1 + random(2)) * 100;
@@ -69,6 +74,10 @@ public class ProcessingView extends PApplet{
         	    drawJoint(joints.get(i));
         	}
         	popMatrix();
+        	
+        	if (recording) {
+        		s.getMovie().addFrame();
+        	}
 		} catch (IndexOutOfBoundsException e) {
 		
 		}
@@ -293,4 +302,6 @@ public class ProcessingView extends PApplet{
         float dy = v1.y - v2.y;
         return new Vector2f(v1.x - (dx / 2), v1.y - (dy / 2));
     }
+
+
 }
