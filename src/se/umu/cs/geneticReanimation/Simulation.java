@@ -12,11 +12,11 @@ import net.phys2d.raw.strategies.QuadSpaceStrategy;
 public class Simulation implements Runnable {
 
     // Constants
-    private final int NROFGENERATIONS = 50;
-    private final int POPULATIONSIZE = 20;
-    private final double CROSSOVERRATE = 0.5;
-    private final double MUTATIONRATE = 0.1;
-    private final int LIFESPAN = 1000;
+    private int NROFGENERATIONS = 50;
+    private int POPULATIONSIZE = 20;
+    private double CROSSOVERRATE = 0.5;
+    private double MUTATIONRATE = 0.1;
+    private int LIFESPAN = 4000;
     
     private final boolean DRAW_GUI = true;
     private final int FPS = 600;
@@ -26,7 +26,13 @@ public class Simulation implements Runnable {
     private GeneticAlgoritm ga;
     private List<Creature> population;
 
-    public Simulation(ProcessingView view) {
+    public Simulation(ProcessingView view, int n, int p, double c, double m, int l) {
+		NROFGENERATIONS = n;
+		POPULATIONSIZE = p;
+		CROSSOVERRATE = c;
+		MUTATIONRATE = m;
+		LIFESPAN = l;
+
         this.view = view;
         setupWorld();
 

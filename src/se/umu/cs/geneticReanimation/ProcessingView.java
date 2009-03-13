@@ -24,21 +24,70 @@ public class ProcessingView extends PApplet{
 
     private Simulation s;
 
+	// Constants
+	private static int NROFGENERATIONS = 50;
+    private static int POPULATIONSIZE = 20;
+    private static double CROSSOVERRATE = 0.5;
+    private static double MUTATIONRATE = 0.1;
+    private static int LIFESPAN = 4000;
+
     public static void main(String args[]) {
+		parseParameters(args);
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView" }); // "--present"
     }
-
-    @Override
+	
+	@Override
     public void setup() {
         println("Processing starts...");
         smooth();
-        this.s = new Simulation(this);
+        this.s = new Simulation(this, NROFGENERATIONS, POPULATIONSIZE, CROSSOVERRATE, MUTATIONRATE, LIFESPAN);
         new Thread(s).start();
         // Prevent draw from looping
         // Update view with redraw()
         noLoop();
     }
 
+	private static void parseParameters(String[] args) {
+		for(String arg : args) {
+			if(arg.charAt(0) == '-') {
+				// By catching the NumberFormatExceptions we make it possible 
+				// to check the value of a parameter by just giving the parameter name, ex: -p
+				switch(arg.charAt(1)) {
+					case 'n':
+						try { NROFGENERATIONS = argIntVal(arg); } catch(NumberFormatException e) {}
+						System.out.println("Number of generations: " + NROFGENERATIONS);
+						break;
+					case 'p':
+						try { POPULATIONSIZE = argIntVal(arg); } catch(NumberFormatException e) {}
+						System.out.println("Population size: " + POPULATIONSIZE);
+						break;
+					case 'c':
+						try { CROSSOVERRATE = argDoubleVal(arg); } catch(NumberFormatException e) {}
+						System.out.println("Crossover rate: " + CROSSOVERRATE);
+						break;
+					case 'm':
+						try { MUTATIONRATE = argDoubleVal(arg); } catch(NumberFormatException e) {}
+						System.out.println("Mutation rate: " + MUTATIONRATE);
+						break;
+					case 'l':
+						try { LIFESPAN = argIntVal(arg); } catch(NumberFormatException e) {}
+						System.out.println("Lifespan: " + LIFESPAN);
+						break;
+					default:
+				}
+			}	
+		}
+	}
+
+	private static int argIntVal(String arg) throws NumberFormatException {
+		return Integer.parseInt(arg.substring(2));
+	}
+	
+	private static double argDoubleVal(String arg) throws NumberFormatException {
+		return Double.parseDouble(arg.substring(2));
+	}
+
+    
     @Override
     public void mousePressed() {
         //         float random1 = (-1 + random(2)) * 100;
