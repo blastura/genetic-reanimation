@@ -23,6 +23,8 @@ public class Simulation implements Runnable {
     private double MUTATIONRATE = 0.1;
     private int LIFESPAN = 4000;
     
+	private String MOVIEPATH = "";
+
     private final boolean DRAW_GUI = true;
     private final int FPS = 600;
     
