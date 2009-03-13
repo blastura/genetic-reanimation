@@ -168,6 +168,10 @@ public strictfp class Body {
 		this("UnnamedBody",(Shape) shape,m);
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+
 	/**
 	 * Check if this body is disabled
 	 * 

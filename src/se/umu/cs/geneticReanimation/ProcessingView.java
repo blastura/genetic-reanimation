@@ -25,7 +25,7 @@ public class ProcessingView extends PApplet{
     private Simulation s;
 	private boolean recording = false;
 
-	// Constants
+	// Default values
 	private static int NROFGENERATIONS = 50;
     private static int POPULATIONSIZE = 20;
     private static double CROSSOVERRATE = 0.5;
@@ -109,8 +109,8 @@ public class ProcessingView extends PApplet{
         	// Reposition center
         	pushMatrix();
         	translate(width / 2, 0);
-
-        	background(255);
+			
+        	background(19, 21, 28);
 
         	BodyList bodies = world.getBodies();
         	for (int i = 0, length = bodies.size(); i < length; i++) {
@@ -147,7 +147,7 @@ public class ProcessingView extends PApplet{
     }
 
     private void drawLineBody(Body body, Line line) {
-        stroke(0, 0, 0);
+        stroke(203, 220, 239);
         strokeWeight(3);
         float x = body.getPosition().getX();
         float y = body.getPosition().getY();
@@ -183,8 +183,15 @@ public class ProcessingView extends PApplet{
      * @param box The shape to be drawn
      */
     protected void drawBoxBody(Body body, Box box) {
-        stroke(0, 0, 0);
         strokeWeight(1);
+
+		if(body.getName().equals("Ground") || body.getName().equals("Wall")) {
+        	stroke(139, 120, 103);
+			fill(50, 40, 40);
+		} else {
+	        stroke(120, 219, 80);
+			fill(40, 50, 40);
+		}
 
         Vector2f[] pts = box.getPoints(body.getPosition(), body.getRotation());
 
@@ -193,10 +200,11 @@ public class ProcessingView extends PApplet{
         Vector2f v3 = pts[2];
         Vector2f v4 = pts[3];
 
-        line((int) v1.x,(int) v1.y,(int) v2.x,(int) v2.y);
-        line((int) v2.x,(int) v2.y,(int) v3.x,(int) v3.y);
-        line((int) v3.x,(int) v3.y,(int) v4.x,(int) v4.y);
-        line((int) v4.x,(int) v4.y,(int) v1.x,(int) v1.y);
+		quad(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+        //line((int) v1.x,(int) v1.y,(int) v2.x,(int) v2.y);
+        //line((int) v2.x,(int) v2.y,(int) v3.x,(int) v3.y);
+        //line((int) v3.x,(int) v3.y,(int) v4.x,(int) v4.y);
+        //line((int) v4.x,(int) v4.y,(int) v1.x,(int) v1.y);
     }
 
     /**
@@ -314,7 +322,7 @@ public class ProcessingView extends PApplet{
             Vector2f p2 = MathUtil.mul(R2,joint.getAnchor2());
             p2.add(x2);
 
-            stroke(255, 0, 0);
+            stroke(255, 120, 255);
             line((int) p1.getX(), (int) p1.getY(), (int) p2.x, (int) p2.y);
         }
         if (j instanceof SpringJoint) {

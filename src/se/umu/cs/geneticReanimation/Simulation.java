@@ -3,7 +3,7 @@ package se.umu.cs.geneticReanimation;
 import java.io.File;
 import java.util.List;
 
-import com.sun.tools.javac.tree.Tree.Synchronized;
+//import com.sun.tools.javac.tree.Tree.Synchronized;
 
 import processing.video.MovieMaker;
 
@@ -16,12 +16,11 @@ import net.phys2d.raw.strategies.QuadSpaceStrategy;
 
 public class Simulation implements Runnable {
 
-    // Constants
-    private int NROFGENERATIONS = 50;
-    private int POPULATIONSIZE = 20;
-    private double CROSSOVERRATE = 0.5;
-    private double MUTATIONRATE = 0.1;
-    private int LIFESPAN = 4000;
+    private int NROFGENERATIONS;
+    private int POPULATIONSIZE;
+    private double CROSSOVERRATE;
+    private double MUTATIONRATE;
+    private int LIFESPAN;
     
 	private String MOVIEPATH = "";
 
@@ -65,7 +64,7 @@ public class Simulation implements Runnable {
         world.add(body1);
 
 		body1 = new StaticBody("Wall", new Box(20, 300));
-		body1.setPosition(-view.width/2, view.height-200);
+		body1.setPosition(-view.width/2, view.height-210);
 		world.add(body1);
 	}
 
