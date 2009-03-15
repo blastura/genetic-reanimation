@@ -132,13 +132,18 @@
 % Introduktion till ämnet, inklusive översikt av tidigare studier
 % \cite{flake}
 
-I detta projekt har vi undersökt om en genetisk algoritm kan hitta rörelsemönster för en enkel varelse med hjälp av ett neuralt nät som hjärna. 
+I detta projekt har vi undersökt möjligheten att utveckla rörelsemönster för en enkel varelse med hjälp av genetiska algoritmer. Varelsen har ett neuralt när som ”hjärna” och har formen av en ledad ”mask”.
 
 \subsection{Karl Sims}
-Karl Sims utforskar i Evolvig Virtual Creatures \cite{sims} både hur varelsers form och deras beteenden kan utvecklas med hjälp av genetiska algoritmer (GA). Varelserna har sensorer och effektorer som är kopplade till in och utnoder i ett neuralat nät. 
+Karl Sims utforskar i Evolving Virtual Creatures \cite{sims} både hur varelsers form och deras beteenden kan utvecklas med hjälp av genetiska algoritmer (GA). Varelserna har sensorer och effektorer som är kopplade till in- och utnoder i ett neuralt nät. 
 
 I sina försök använder Sims en GA för att optimera både struktur och vikter i det neurala nätet. Det nät han använder har i varje nod en av många matematiska funktioner; exempelvis sinus, summa, produkt, max, osv. Sims lät sina försök köra mellan 50 och 100 generationer och optimerade mot olika typer av beteenden som ex gång, simmande och hoppande rörelser. 
 
+\subsection{Hugo de Garis}
+GENETIC PROGRAMMING Evolutionary Approaches to Multistrategy Learning\cite{garis}
+Hugo de Garis forskning inriktar sig i störst utsträckning mot utveckling av hårdvara med hjälp av genetiska algoritmer. Han beskriver metoder som shaping (att i olika steg ändra definitionen för fitness) och talar om "utvecklingsbara system" med de avseendet att vissa system inte går att ge önskvärt beteende med hjälp av genetiska algoritmer. Han nämner att de inte finns något sätt att definitivt avgöra vilka system som är utvecklingsbara med fasta kriterier.
+
+Garis har utvecklat en simulerad ödla som han kallar LIZZY. LIZZY känner sig omvärld med två antenner och mottar därigenom karaktäristiska signaler från tre sorters kreatur i dess omgivning; Mate, Prey och Predator. Med hjälp av ett neuralt nät och en genetisk algoritm lär sig sedan LIZZY att söka upp Prey och Mate, där vidta passande åtgärder, och att fly undan Predators.
 
 \section{Metodbeskrivning}
 % Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna
@@ -153,7 +158,7 @@ Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och
 	Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärna. För att evaluera fitness för varje individ skapas ett nät med de vikter genotypen anger, detta får sedan under en begränsad tid styra en fast kropp i en fysiksimulering. Fitness beräknas på hur långt kroppen lyckats röra sig.
 		
 	\subsection{Hjärnan}
-	Hjärnan består av ett hopfield neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
+	Hjärnan består av ett Hopfield neuralt nät som styr varelsens beteende. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt. Vissa noder har även bågar från sensorer i simuleringen. Ur vissa noder hämtas värdet och används som data till effektorer i simuleringen. 
 
 	Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1. 
 

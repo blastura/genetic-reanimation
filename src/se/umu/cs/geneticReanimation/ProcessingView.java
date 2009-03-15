@@ -23,21 +23,21 @@ import processing.core.*;
 public class ProcessingView extends PApplet{
 
     private Simulation s;
-	private boolean recording = false;
+    private boolean recording = false;
 
-	// Default values
-	private static int NROFGENERATIONS = 50;
+    // Default values
+    private static int NROFGENERATIONS = 50;
     private static int POPULATIONSIZE = 20;
     private static double CROSSOVERRATE = 0.5;
     private static double MUTATIONRATE = 0.1;
     private static int LIFESPAN = 4000;
 
     public static void main(String args[]) {
-		parseParameters(args);
+        parseParameters(args);
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView" }); // "--present"
     }
-	
-	@Override
+
+    @Override
     public void setup() {
         println("Processing starts...");
         smooth();
@@ -48,50 +48,50 @@ public class ProcessingView extends PApplet{
         noLoop();
     }
 
-	private static void parseParameters(String[] args) {
-		for(String arg : args) {
-			if(arg.charAt(0) == '-') {
-				// By catching the NumberFormatExceptions we make it possible 
-				// to check the value of a parameter by just giving the parameter name, ex: -p
-				switch(arg.charAt(1)) {
-					case 'n':
-						try { NROFGENERATIONS = argIntVal(arg); } catch(NumberFormatException e) {}
-						System.out.println("Number of generations: " + NROFGENERATIONS);
-						break;
-					case 'p':
-						try { POPULATIONSIZE = argIntVal(arg); } catch(NumberFormatException e) {}
-						System.out.println("Population size: " + POPULATIONSIZE);
-						break;
-					case 'c':
-						try { CROSSOVERRATE = argDoubleVal(arg); } catch(NumberFormatException e) {}
-						System.out.println("Crossover rate: " + CROSSOVERRATE);
-						break;
-					case 'm':
-						try { MUTATIONRATE = argDoubleVal(arg); } catch(NumberFormatException e) {}
-						System.out.println("Mutation rate: " + MUTATIONRATE);
-						break;
-					case 'l':
-						try { LIFESPAN = argIntVal(arg); } catch(NumberFormatException e) {}
-						System.out.println("Lifespan: " + LIFESPAN);
-						break;
-					default:
-				}
-			}	
-		}
-	}
+    private static void parseParameters(String[] args) {
+        for(String arg : args) {
+            if(arg.charAt(0) == '-') {
+                // By catching the NumberFormatExceptions we make it possible
+                // to check the value of a parameter by just giving the parameter name, ex: -p
+                switch(arg.charAt(1)) {
+                case 'n':
+                    try { NROFGENERATIONS = argIntVal(arg); } catch(NumberFormatException e) {}
+                    System.out.println("Number of generations: " + NROFGENERATIONS);
+                    break;
+                case 'p':
+                    try { POPULATIONSIZE = argIntVal(arg); } catch(NumberFormatException e) {}
+                    System.out.println("Population size: " + POPULATIONSIZE);
+                    break;
+                case 'c':
+                    try { CROSSOVERRATE = argDoubleVal(arg); } catch(NumberFormatException e) {}
+                    System.out.println("Crossover rate: " + CROSSOVERRATE);
+                    break;
+                case 'm':
+                    try { MUTATIONRATE = argDoubleVal(arg); } catch(NumberFormatException e) {}
+                    System.out.println("Mutation rate: " + MUTATIONRATE);
+                    break;
+                case 'l':
+                    try { LIFESPAN = argIntVal(arg); } catch(NumberFormatException e) {}
+                    System.out.println("Lifespan: " + LIFESPAN);
+                    break;
+                default:
+                }
+            }
+        }
+    }
 
-	private static int argIntVal(String arg) throws NumberFormatException {
-		return Integer.parseInt(arg.substring(2));
-	}
-	
-	private static double argDoubleVal(String arg) throws NumberFormatException {
-		return Double.parseDouble(arg.substring(2));
-	}
-    
-	public void setRecording(boolean b) {
-		this.recording  = b;
-	}
-	
+    private static int argIntVal(String arg) throws NumberFormatException {
+        return Integer.parseInt(arg.substring(2));
+    }
+
+    private static double argDoubleVal(String arg) throws NumberFormatException {
+        return Double.parseDouble(arg.substring(2));
+    }
+
+    public void setRecording(boolean b) {
+        this.recording  = b;
+    }
+
     @Override
     public void mousePressed() {
         //         float random1 = (-1 + random(2)) * 100;
@@ -103,32 +103,32 @@ public class ProcessingView extends PApplet{
 
     @Override
     public void draw() {
-		try {
-        	World world = s.getWorld();
-        
-        	// Reposition center
-        	pushMatrix();
-        	translate(width / 2, 0);
-			
-        	background(19, 21, 28);
+        try {
+            World world = s.getWorld();
 
-        	BodyList bodies = world.getBodies();
-        	for (int i = 0, length = bodies.size(); i < length; i++) {
-        	    drawBody(bodies.get(i));
-       		}
+            // Reposition center
+            pushMatrix();
+            translate(width / 2, 0);
 
-        	JointList joints = world.getJoints();
-        	for (int i = 0, length = joints.size(); i < length; i++) {
-        	    drawJoint(joints.get(i));
-        	}
-        	popMatrix();
-        	
-        	if (recording) {
-        		s.getMovie().addFrame();
-        	}
-		} catch (IndexOutOfBoundsException e) {
-		
-		}
+            background(19, 21, 28);
+
+            BodyList bodies = world.getBodies();
+            for (int i = 0, length = bodies.size(); i < length; i++) {
+                drawBody(bodies.get(i));
+            }
+
+            JointList joints = world.getJoints();
+            for (int i = 0, length = joints.size(); i < length; i++) {
+                drawJoint(joints.get(i));
+            }
+            popMatrix();
+
+            if (recording) {
+                s.getMovie().addFrame();
+            }
+        } catch (IndexOutOfBoundsException e) {
+
+        }
     }
 
 
@@ -185,13 +185,13 @@ public class ProcessingView extends PApplet{
     protected void drawBoxBody(Body body, Box box) {
         strokeWeight(1);
 
-		if(body.getName().equals("Ground") || body.getName().equals("Wall")) {
-        	stroke(139, 120, 103);
-			fill(50, 40, 40);
-		} else {
-	        stroke(120, 219, 80);
-			fill(40, 50, 40);
-		}
+        if(body.getName().equals("Ground") || body.getName().equals("Wall")) {
+            stroke(139, 120, 103);
+            fill(50, 40, 40);
+        } else {
+            stroke(120, 219, 80);
+            fill(40, 50, 40);
+        }
 
         Vector2f[] pts = box.getPoints(body.getPosition(), body.getRotation());
 
@@ -200,7 +200,7 @@ public class ProcessingView extends PApplet{
         Vector2f v3 = pts[2];
         Vector2f v4 = pts[3];
 
-		quad(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+        quad(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
         //line((int) v1.x,(int) v1.y,(int) v2.x,(int) v2.y);
         //line((int) v2.x,(int) v2.y,(int) v3.x,(int) v3.y);
         //line((int) v3.x,(int) v3.y,(int) v4.x,(int) v4.y);

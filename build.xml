@@ -73,7 +73,7 @@
     <!--       <fileset dir="${src.resources.dir}"/> -->
     <!--     </copy> -->
     <!-- Compile -->
-    <javac srcdir="${test.dir}" destdir="${build.test.dir}">
+    <javac srcdir="${test.dir}" destdir="${build.test.dir}" debug="on">
       <classpath refid="project.classpath" />
     </javac>
   </target>
@@ -147,7 +147,11 @@
   </target>
 
   <target name="print-classpath" description="Prints classpath, convenient for export to emacs and jde-mode">
-    <property name="classpath" refid="project.classpath"/>
-    <echo message="-classpath-${classpath}-classpath-"/>
+    <property environment="env"/>
+    <pathconvert pathsep=":" property="project.classpath.conv" refid="project.classpath">
+      <map from="${env.PWD}" to="."/>
+    </pathconvert>
+    <echo message="-classpath-${project.classpath.conv}-classpath-"/>
+    <echo message="${env.PWD}"/>
   </target>
 </project>

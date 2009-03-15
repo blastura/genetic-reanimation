@@ -16,29 +16,30 @@ import net.phys2d.raw.strategies.QuadSpaceStrategy;
 
 public class Simulation implements Runnable {
 
-    private int NROFGENERATIONS;
-    private int POPULATIONSIZE;
-    private double CROSSOVERRATE;
-    private double MUTATIONRATE;
-    private int LIFESPAN;
-    
-	private String MOVIEPATH = "";
+    private final int NROFGENERATIONS;
+    private final int POPULATIONSIZE;
+    private final double CROSSOVERRATE;
+    private final double MUTATIONRATE;
+    private final int LIFESPAN;
+
+    private final String MOVIEPATH = "";
 
     private final boolean DRAW_GUI = true;
     private final int FPS = 600;
-    
+
     private ProcessingView view;
     private World world;
     private GeneticAlgoritm ga;
     private List<Creature> population;
-	private MovieMaker movie;
+    private MovieMaker movie;
 
-    public Simulation(ProcessingView view, int n, int p, double c, double m, int l) {
-		NROFGENERATIONS = n;
-		POPULATIONSIZE = p;
-		CROSSOVERRATE = c;
-		MUTATIONRATE = m;
-		LIFESPAN = l;
+    public Simulation(ProcessingView view, int nrOfGenerations, int populationSize,
+                      double crossoverRate, double mutationRate, int lifeSpan) {
+        this.NROFGENERATIONS = nrOfGenerations;
+        this.POPULATIONSIZE = populationSize;
+        this.CROSSOVERRATE = crossoverRate;
+        this.MUTATIONRATE = mutationRate;
+        this.LIFESPAN = lifeSpan;
 
         this.view = view;
         setupWorld();
@@ -63,119 +64,119 @@ public class Simulation implements Runnable {
         body1.setPosition(view.width / 2, view.height - 10);
         world.add(body1);
 
-		body1 = new StaticBody("Wall", new Box(20, 300));
-		body1.setPosition(-view.width/2, view.height-210);
-		world.add(body1);
-	}
+        body1 = new StaticBody("Wall", new Box(20, 300));
+        body1.setPosition(-view.width/2, view.height-210);
+        world.add(body1);
+    }
 
-	public void run() {
-		for (int i = 0; i < NROFGENERATIONS; i++) {
-			System.out.println("Generation " + (i+1) + " is starting...");
-			for (Creature creature : population) {
-				creature.connectToWorld(world);
-				simulate(creature);
-				calculateFitness(creature);
+    public void run() {
+        for (int i = 0; i < NROFGENERATIONS; i++) {
+            System.out.println("Generation " + (i+1) + " is starting...");
+            for (Creature creature : population) {
+                creature.connectToWorld(world);
+                simulate(creature);
+                calculateFitness(creature);
 
-				// Reset world
-				world.clear();
-				addGround();
-			}
-			
-			// Record the best one
-			//recordBest(i);
-			
-			System.out.println("Generation " + (i+1) + " is done.");
-			this.population = ga.createNextGeneration(this.population);
-		}
-		System.out.println("Simulation ended.");
-	}
+                // Reset world
+                world.clear();
+                addGround();
+            }
 
-	/**
-	 * Finds the best creature of the current generation and 
-	 * records a simulation with it 
-	 * @param generation The index of the generation
-	 */
-	private void recordBest(int generation) {
-		// Find the best
-		Creature bestCreature = population.get(0);
-		double bestFitness = bestCreature.getFitness();
-		for (Creature creature : population) {
-			if (bestFitness < creature.getFitness()) {
-				bestCreature = creature;
-				bestFitness = bestCreature.getFitness();
-			}
-		}
-		
-		String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
-		bestCreature.connectToWorld(world);
-		recordMovie(filename);
-		simulate(bestCreature);
-		stopMovie();
-	}
+            // Record the best one
+            // recordBest(i);
 
-	public World getWorld() {
-		return this.world;
-	}
+            System.out.println("Generation " + (i+1) + " is done.");
+            this.population = ga.createNextGeneration(this.population);
+        }
+        System.out.println("Simulation ended.");
+    }
 
-	private void calculateFitness(Creature creature) {
-		double fitness = creature.getXPosition()-120+360; // -worm length + worm startpos
-		System.out.println("Fitness: " + fitness);
-		creature.setFitness(fitness);
-	}
+    /**
+     * Finds the best creature of the current generation and
+     * records a simulation with it
+     * @param generation The index of the generation
+     */
+    private void recordBest(int generation) {
+        // Find the best
+        Creature bestCreature = population.get(0);
+        double bestFitness = bestCreature.getFitness();
+        for (Creature creature : population) {
+            if (bestFitness < creature.getFitness()) {
+                bestCreature = creature;
+                bestFitness = bestCreature.getFitness();
+            }
+        }
 
-	private void simulate(Creature creature) {
-		System.out.println("Simulating: " + encode(creature.getGenotype()));
-		for (int step=0; step < LIFESPAN; step++) {
-			world.step();
-			creature.act();
-			if (DRAW_GUI) {
-				try {
-					long waitTime = 1000 / FPS;
-					Thread.sleep(waitTime);
-				} catch (InterruptedException e) {
-					System.err.println("Simulate sleep interrupted");
-				}
-				view.redraw();                
-			}
-		}
-	}
+        String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
+        bestCreature.connectToWorld(world);
+        recordMovie(filename);
+        simulate(bestCreature);
+        stopMovie();
+    }
 
-	private String encode(double[] genotype) {
-		String s = "";
-		for(double d : genotype) {
-			s += String.valueOf(d) + " ";
-		}
-		return s;
-	}
+    public World getWorld() {
+        return this.world;
+    }
 
-	private void recordMovie(String filename) {
-		String fullname = MOVIEPATH + filename + ".mov";
+    private void calculateFitness(Creature creature) {
+        double fitness = creature.getXPosition()-120+360; // -worm length + worm startpos
+        System.out.println("Fitness: " + fitness);
+        creature.setFitness(fitness);
+    }
 
-		// Check if file exists 
-		File file = new File(fullname);
-		if (file.exists()) {
-			file.delete();
-		}
+    private void simulate(Creature creature) {
+        System.out.println("Simulating: " + encode(creature.getGenotype()));
+        for (int step=0; step < LIFESPAN; step++) {
+            world.step();
+            creature.act();
+            if (DRAW_GUI) {
+                try {
+                    long waitTime = 1000 / FPS;
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException e) {
+                    System.err.println("Simulate sleep interrupted");
+                }
+                view.redraw();
+            }
+        }
+    }
 
-//		this.movie = new MovieMaker(view, view.width, view.height, fullname, 20);
-		
-		 // Or, set specific compression and frame rate options
-		  this.movie = new MovieMaker(view, view.width, view.height, fullname, 30, 
-		                      MovieMaker.ANIMATION, MovieMaker.HIGH);
-		
-		
-		view.setRecording(true);
-		System.out.println("Recording movie: >" + filename + ".mov<...");
-		}
-	
-	private void stopMovie() {
-		view.setRecording(false);
-		this.movie.finish();
-		System.out.println("Recording ended.");
-	}
-	
-	public MovieMaker getMovie() {
-		return this.movie;
-	}
+    private String encode(double[] genotype) {
+        String s = "";
+        for(double d : genotype) {
+            s += String.valueOf(d) + " ";
+        }
+        return s;
+    }
+
+    private void recordMovie(String filename) {
+        String fullname = MOVIEPATH + filename + ".mov";
+
+        // Check if file exists
+        File file = new File(fullname);
+        if (file.exists()) {
+            file.delete();
+        }
+
+        //     this.movie = new MovieMaker(view, view.width, view.height, fullname, 20);
+
+        // Or, set specific compression and frame rate options
+        this.movie = new MovieMaker(view, view.width, view.height, fullname, 30,
+                                    MovieMaker.ANIMATION, MovieMaker.HIGH);
+
+
+        view.setRecording(true);
+        System.out.println("Recording movie: >" + filename + ".mov<...");
+    }
+
+    private void stopMovie() {
+        view.setRecording(false);
+        this.movie.finish();
+        System.out.println("Recording ended.");
+    }
+
+    public MovieMaker getMovie() {
+        return this.movie;
+    }
 
 }

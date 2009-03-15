@@ -1,7 +1,6 @@
 package se.umu.cs.geneticReanimation;
 
 import java.util.*;
-import net.phys2d.raw.World;
 
 public class GeneticAlgoritm {
     private int populationSize;
@@ -36,9 +35,9 @@ public class GeneticAlgoritm {
      * @param oldPopulation List over the old population
      * @return
      */
-    public List createNextGeneration(List oldPopulation) {
+    public List<Creature> createNextGeneration(List<Creature> oldPopulation) {
         this.population = oldPopulation;
-        ArrayList newPopulation = new ArrayList<Creature>();
+        ArrayList<Creature> newPopulation = new ArrayList<Creature>();
 
         Creature parent1;
         Creature parent2;
@@ -56,7 +55,7 @@ public class GeneticAlgoritm {
         }
 
         for (int i = 0; i < populationSize; i++) {
-            mutate((Creature)newPopulation.get(i));
+            mutate(newPopulation.get(i));
         }
 
         population = newPopulation;
