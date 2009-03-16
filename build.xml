@@ -106,7 +106,7 @@
   <target name="run" description="Run program" depends="compile">
     <java classname="${main-class}" fork="true" dir="${build.main.dir}">
       <classpath refid="project.classpath" />
-      <!-- <arg value="somevalue"/> -->
+      <!-- <arg value="-f/Users/anton/Documents/skola/emergenta-system/projektet/generation-0.txt"/> -->
     </java>
   </target>
 

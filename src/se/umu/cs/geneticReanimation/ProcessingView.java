@@ -1,5 +1,6 @@
 package se.umu.cs.geneticReanimation;
 
+import java.io.File;
 import net.phys2d.math.MathUtil;
 import net.phys2d.math.Matrix2f;
 import net.phys2d.math.ROVector2f;
@@ -20,29 +21,35 @@ import net.phys2d.raw.shapes.Circle;
 import net.phys2d.raw.shapes.Line;
 import processing.core.*;
 
-public class ProcessingView extends PApplet{
+public class ProcessingView extends PApplet {
 
     private Simulation s;
     private boolean recording = false;
-
+    private static File generationFile;
+    
     // Default values
     public static int NROFGENERATIONS = 50;
     public static int POPULATIONSIZE = 20;
     public static double CROSSOVERRATE = 0.5;
     public static double MUTATIONRATE = 0.1;
     public static int LIFESPAN = 4000;
-	public static boolean RECORDBEST = false;
+    public static boolean RECORDBEST = false;
+    public static boolean SAVE_BEST_TO_FILE = true;
 
     public static void main(String args[]) {
         parseParameters(args);
-        PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView" }); // "--present"
+        PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView"}); // "--present"
     }
 
     @Override
     public void setup() {
         println("Processing starts...");
         smooth();
-        this.s = new Simulation(this);
+        if (generationFile != null) {
+            this.s = new Simulation(this, generationFile);
+        } else {
+            this.s = new Simulation(this);
+        }
         new Thread(s).start();
         // Prevent draw from looping
         // Update view with redraw()
@@ -55,6 +62,9 @@ public class ProcessingView extends PApplet{
                 // By catching the NumberFormatExceptions we make it possible
                 // to check the value of a parameter by just giving the parameter name, ex: -p
                 switch(arg.charAt(1)) {
+                case 'f':
+                    generationFile = new File(arg.substring(2));
+                    break;
                 case 'n':
                     try { NROFGENERATIONS = argIntVal(arg); } catch(NumberFormatException e) {}
                     System.out.println("Number of generations: " + NROFGENERATIONS);
@@ -75,7 +85,7 @@ public class ProcessingView extends PApplet{
                     try { LIFESPAN = argIntVal(arg); } catch(NumberFormatException e) {}
                     System.out.println("Lifespan: " + LIFESPAN);
                     break;
-				case 'r':
+                case 'r':
                     try { RECORDBEST = argBooleanVal(arg); } catch(NumberFormatException e) {}
                     System.out.println("Record best: " + RECORDBEST);
                 default:

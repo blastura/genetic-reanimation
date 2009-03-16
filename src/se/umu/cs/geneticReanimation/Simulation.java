@@ -1,11 +1,11 @@
 package se.umu.cs.geneticReanimation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.net.URL;
 import java.util.List;
-
-//import com.sun.tools.javac.tree.Tree.Synchronized;
-
-import processing.video.MovieMaker;
 
 import net.phys2d.math.Vector2f;
 import net.phys2d.raw.Body;
@@ -14,10 +14,19 @@ import net.phys2d.raw.World;
 import net.phys2d.raw.shapes.Box;
 import net.phys2d.raw.strategies.QuadSpaceStrategy;
 
-public class Simulation implements Runnable {
-    private final String MOVIEPATH = "";
+import processing.video.MovieMaker;
 
-    private final boolean DRAW_GUI = false;
+import se.umu.cs.geneticReanimation.creature.Creature;
+import se.umu.cs.geneticReanimation.creature.WormCreature;
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class Simulation implements Runnable {
+    private static final URL RESOURCE_URL
+        = Simulation.class.getResource("/resources");
+    
+    private final String MOVIEPATH = "";
+    private final boolean DRAW_GUI = true;
     private final int FPS = 600;
 
     private ProcessingView view;
@@ -26,57 +35,90 @@ public class Simulation implements Runnable {
     private List<Creature> population;
     private MovieMaker movie;
 
+    public Simulation(ProcessingView view, File generationFile) {
+        try {
+            this.population = createPopulationFromFile(generationFile);
+            this.view = view;
+            initWorld();
+            
+            // Setup simulation
+            this.ga = new GeneticAlgoritm(ProcessingView.POPULATIONSIZE,
+                                          ProcessingView.CROSSOVERRATE,
+                                          ProcessingView.MUTATIONRATE);
+        } catch (FileNotFoundException e) {
+            // TODO - fix error message
+            e.printStackTrace();
+        }
+    }
+    
     public Simulation(ProcessingView view) {
         this.view = view;
-        setupWorld();
+        initWorld();
 
         // Setup simulation
-        this.ga = new GeneticAlgoritm(view.POPULATIONSIZE, view.CROSSOVERRATE, view.MUTATIONRATE);
+        this.ga = new GeneticAlgoritm(ProcessingView.POPULATIONSIZE,
+                                      ProcessingView.CROSSOVERRATE,
+                                      ProcessingView.MUTATIONRATE);
         this.population = this.ga.createPopulation();
     }
 
-    private void setupWorld() {
+    /**
+     * Initializes the world, sets size of frame and creates a Phys2d World.
+     */
+    private void initWorld() {
         this.world = new World(new Vector2f(0.0f, 10.0f),
                                20, new QuadSpaceStrategy(20,5));
         view.size(1600 / 2, 1000 / 2);
-        world.clear();
-        addGround();
+        resetWorld();
     }
 
-    private void addGround() {
+    /**
+     * Resets the world to a starting state. Clear world, adds a ground and a
+     * wall.
+     */
+    private void resetWorld() {
+        this.world.clear();
+        
         //Add ground
-        Body body1;
-        body1 = new StaticBody("Ground", new Box(view.width * 10, 100));
-        body1.setPosition(view.width / 2, view.height - 10);
-        world.add(body1);
+        Body body;
+        body = new StaticBody("Ground", new Box(view.width * 10, 100));
+        body.setPosition(view.width / 2, view.height - 10);
+        this.world.add(body);
 
-        body1 = new StaticBody("Wall", new Box(20, 300));
-        body1.setPosition(-view.width/2, view.height-210);
-        world.add(body1);
+        // Add left wall
+        body = new StaticBody("Wall", new Box(20, 300));
+        body.setPosition(-view.width/2, view.height-210);
+        this.world.add(body);
     }
 
+    /**
+     * Start the Simulation Thread. Runs a loop for every Generation, specified
+     * by ProcessingView.NROFGENERATIONS, which creates a population for every
+     * generation and simulates every individual in that population.
+     *
+     * TODO: implements
+     */
     public void run() {
-        for (int i = 0; i < view.NROFGENERATIONS; i++) {
+        for (int i = 0; i < ProcessingView.NROFGENERATIONS; i++) {
             System.out.println("Generation " + (i+1) + " is starting...");
             for (Creature creature : population) {
                 creature.connectToWorld(world);
                 simulate(creature);
                 calculateFitness(creature);
 
-                // Reset world
-                world.clear();
-                addGround();
+                resetWorld();
             }
 
             // Record the best one
-            if(view.RECORDBEST) { recordBest(i); }
-
+            if (ProcessingView.RECORDBEST) { recordBest(i); }
+            if (ProcessingView.SAVE_BEST_TO_FILE) { savePopulation(population, i); }
+            
             System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
         }
         System.out.println("Simulation ended.");
     }
-
+    
     /**
      * Finds the best creature of the current generation and
      * records a simulation with it
@@ -94,16 +136,47 @@ public class Simulation implements Runnable {
         }
 
         String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
-        
-		bestCreature = new WormCreature(bestCreature.getGenotype());
-		bestCreature.connectToWorld(world);
+
+        bestCreature = new WormCreature(bestCreature.getGenotype());
+        bestCreature.connectToWorld(world);
         recordMovie(filename);
         simulate(bestCreature, true);
         stopMovie();
-		world.clear();
-		addGround();
+        resetWorld();
     }
 
+    private void savePopulation(List<Creature> population) {
+        savePopulation(population, -1);
+    }
+    
+    private void savePopulation(List<Creature> population, int generation) {
+        // TODO: save generation to file
+        // RESOURCE_URL   
+        try {
+            File outFile = new File(RESOURCE_URL.getPath(), "generation-" + generation + ".txt");
+            FileOutputStream out = new FileOutputStream(outFile);
+            PrintStream p = new PrintStream(out);
+            // TODO: print stuff to p
+            p.println("#   populationeSize");
+            p.println("#   genotypeSize");
+            p.println("# * fitness genotype");
+            p.println(population.size());
+            p.println(population.get(0).getGenotype().length);
+            
+            for (Creature creature : population) {
+                // Requires: Fitness to be calculated
+                p.print(creature.getFitness() + " ");
+                for (double val : creature.getGenotype()) {
+                    p.print(val + " ");
+                }
+                p.println();
+            }
+        } catch (FileNotFoundException e) {
+            // TODO - fix error message
+            e.printStackTrace();
+        }
+    }
+    
     public World getWorld() {
         return this.world;
     }
@@ -114,13 +187,13 @@ public class Simulation implements Runnable {
         creature.setFitness(fitness);
     }
 
-	private void simulate(Creature creature) {
-		simulate(creature, false);	
-	}
+    private void simulate(Creature creature) {
+        simulate(creature, false);
+    }
 
     private void simulate(Creature creature, boolean force_gui) {
         System.out.println("Simulating: " + encode(creature.getGenotype()));
-        for (int step=0; step < view.LIFESPAN; step++) {
+        for (int step=0; step < ProcessingView.LIFESPAN; step++) {
             world.step();
             creature.act();
             if (DRAW_GUI || force_gui) {
@@ -172,5 +245,34 @@ public class Simulation implements Runnable {
     public MovieMaker getMovie() {
         return this.movie;
     }
-
+    
+    public List<Creature> createPopulationFromFile(File generationFile) throws FileNotFoundException {
+        System.err.println("TODO: implement");
+        System.out.println("File: " + generationFile.getPath());
+        Scanner s = new Scanner(generationFile);
+        s.nextLine(); // Comments
+        s.nextLine(); // Comments
+        s.nextLine(); // Comments
+        int populationSize = s.nextInt();
+        int genSize = s.nextInt();
+            
+        System.out.println("size " + genSize);
+        List<Creature> result = new ArrayList<Creature>(populationSize);
+        
+        while (s.hasNextDouble()) {
+            double fitness = s.nextDouble();
+            double[] genotype = new double[genSize];
+            
+            for (int i = 0; i < genSize; i++) {
+                double val = s.nextDouble();
+                genotype[i] = val;
+                System.out.print(val + " ");
+            }
+            // One genome is fetched
+            result.add(new WormCreature(genotype));
+            System.out.println("done");
+        }
+        System.out.println("Population: " + result);
+        return result;
+    }
 }

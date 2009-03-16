@@ -1,4 +1,4 @@
-package se.umu.cs.geneticReanimation;
+package se.umu.cs.geneticReanimation.creature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,28 +13,24 @@ import se.umu.cs.geneticReanimation.neuralnet.Brain;
 import se.umu.cs.geneticReanimation.neuralnet.HopfieldNeuralNet;
 
 public class WormCreature implements Creature {
-	private final float MAX_ANGLE_STEP = (float)(Math.PI/10);
+    private final float MAX_ANGLE_STEP = (float)(Math.PI/10);
 
     private double fitness;
     private Brain brain;
     private List<Body> bodyList;
     private List<Joint> jointList;
-	
+
     // Effectors
     private SpringyAngleJoint[] saj;
-    
+
     public WormCreature(double[] genotype) {
         this.brain = new HopfieldNeuralNet(genotype);
-        this.bodyList = new ArrayList<Body>();
-        this.jointList = new ArrayList<Joint>();
         initBody();
     }
-    
+
     public WormCreature() {
-        this.bodyList = new ArrayList<Body>();
-        this.jointList = new ArrayList<Joint>();
         initBody();
-        
+
         int genotypeSize = (int) Math.pow(bodyList.size(), 2); //saj.length * saj.length;
         double[] newGenotype = new double[genotypeSize];
         for (int i = 0; i<genotypeSize; i++) {
@@ -42,17 +38,20 @@ public class WormCreature implements Creature {
         }
         this.brain = new HopfieldNeuralNet(newGenotype);
     }
-    
+
     public void connectToWorld(World world) {
         for (Body b : bodyList) {
             world.add(b);
         }
         for (Joint j : jointList) {
             world.add(j);
-        }        
+        }
     }
 
     private void initBody() {
+        this.bodyList = new ArrayList<Body>();
+        this.jointList = new ArrayList<Joint>();
+        
         // Make schneyk
         float sWidth = 20f;
         float sHeight = 10f;
@@ -60,7 +59,7 @@ public class WormCreature implements Creature {
         int sections = 5;
 
         saj = new SpringyAngleJoint[sections-1];
-        
+
         Body segment = null;
         Body prev_segment;
 
@@ -81,35 +80,35 @@ public class WormCreature implements Creature {
                 jointList.add(saj[i-1]);
             }
         }
-		segment.adjustAngularVelocity(0.5f);
+        segment.adjustAngularVelocity(0.5f);
     }
-    
+
     public void act() {
         double[] inputs = new double[bodyList.size()-1];
         for (int i = 0, length = inputs.length; i < length; i++) {
             float b1 = bodyList.get(i).getPosition().getY();
             float b2 = bodyList.get(i+1).getPosition().getY();
-			inputs[i] = b1-b2;
+            inputs[i] = b1-b2;
         }
 
         brain.setInputs(inputs);
         brain.step();
         brain.step();
         double[] outputs = brain.getOutputs();
-        
+
         // Affect worm
         for (int i = 0, length = outputs.length; i < length && i < saj.length; i++) {
-			float angle = saj[i].getOriginalAngle();
-			float goal = (float)(outputs[i] * Math.PI);
-			if(goal > angle) {
-				angle += Math.min(MAX_ANGLE_STEP, goal-angle);
-			} else if (goal < angle) {
-				angle -= Math.min(MAX_ANGLE_STEP, angle-goal);
-			}
+            float angle = saj[i].getOriginalAngle();
+            float goal = (float)(outputs[i] * Math.PI);
+            if(goal > angle) {
+                angle += Math.min(MAX_ANGLE_STEP, goal-angle);
+            } else if (goal < angle) {
+                angle -= Math.min(MAX_ANGLE_STEP, angle-goal);
+            }
             saj[i].setOriginalAngle(angle);
         }
     }
-    
+
     public double getFitness() {
         return this.fitness;
     }
@@ -122,14 +121,14 @@ public class WormCreature implements Creature {
         return brain.getGenotype();
     }
 
-	public void setGenotype(double[] genotype) {
-		// REPLACE BRAIN! MUAWHAHA
-		this.brain = new HopfieldNeuralNet(genotype);
-	}
+    public void setGenotype(double[] genotype) {
+        // REPLACE BRAIN! MUAWHAHA
+        this.brain = new HopfieldNeuralNet(genotype);
+    }
 
-	public double getXPosition() {
-		return (double)bodyList.get(bodyList.size()-1).getPosition().getX();
-	}
+    public double getXPosition() {
+        return (double)bodyList.get(bodyList.size()-1).getPosition().getX();
+    }
 
     private Vector2f getMidPosition(Body b1, Body b2) {
         Vector2f v1 = (Vector2f) b1.getPosition();
@@ -139,5 +138,19 @@ public class WormCreature implements Creature {
         float dx = v1.x - v2.x;
         float dy = v1.y - v2.y;
         return new Vector2f(v1.x - (dx / 2), v1.y - (dy / 2));
+    }
+
+    @Override
+    public Creature clone() {
+        try {
+            WormCreature result = (WormCreature) super.clone();
+            result.initBody();
+
+            return result;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            throw new Error("Object " + this.getClass().getName()
+                            + " is not Cloneable");
+        }
     }
 }
