@@ -15,16 +15,9 @@ import net.phys2d.raw.shapes.Box;
 import net.phys2d.raw.strategies.QuadSpaceStrategy;
 
 public class Simulation implements Runnable {
-
-    private final int NROFGENERATIONS;
-    private final int POPULATIONSIZE;
-    private final double CROSSOVERRATE;
-    private final double MUTATIONRATE;
-    private final int LIFESPAN;
-
     private final String MOVIEPATH = "";
 
-    private final boolean DRAW_GUI = true;
+    private final boolean DRAW_GUI = false;
     private final int FPS = 600;
 
     private ProcessingView view;
@@ -33,19 +26,12 @@ public class Simulation implements Runnable {
     private List<Creature> population;
     private MovieMaker movie;
 
-    public Simulation(ProcessingView view, int nrOfGenerations, int populationSize,
-                      double crossoverRate, double mutationRate, int lifeSpan) {
-        this.NROFGENERATIONS = nrOfGenerations;
-        this.POPULATIONSIZE = populationSize;
-        this.CROSSOVERRATE = crossoverRate;
-        this.MUTATIONRATE = mutationRate;
-        this.LIFESPAN = lifeSpan;
-
+    public Simulation(ProcessingView view) {
         this.view = view;
         setupWorld();
 
         // Setup simulation
-        this.ga = new GeneticAlgoritm(POPULATIONSIZE, CROSSOVERRATE, MUTATIONRATE);
+        this.ga = new GeneticAlgoritm(view.POPULATIONSIZE, view.CROSSOVERRATE, view.MUTATIONRATE);
         this.population = this.ga.createPopulation();
     }
 
@@ -70,7 +56,7 @@ public class Simulation implements Runnable {
     }
 
     public void run() {
-        for (int i = 0; i < NROFGENERATIONS; i++) {
+        for (int i = 0; i < view.NROFGENERATIONS; i++) {
             System.out.println("Generation " + (i+1) + " is starting...");
             for (Creature creature : population) {
                 creature.connectToWorld(world);
@@ -83,7 +69,7 @@ public class Simulation implements Runnable {
             }
 
             // Record the best one
-            // recordBest(i);
+            if(view.RECORDBEST) { recordBest(i); }
 
             System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
@@ -108,10 +94,14 @@ public class Simulation implements Runnable {
         }
 
         String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
-        bestCreature.connectToWorld(world);
+        
+		bestCreature = new WormCreature(bestCreature.getGenotype());
+		bestCreature.connectToWorld(world);
         recordMovie(filename);
-        simulate(bestCreature);
+        simulate(bestCreature, true);
         stopMovie();
+		world.clear();
+		addGround();
     }
 
     public World getWorld() {
@@ -124,12 +114,16 @@ public class Simulation implements Runnable {
         creature.setFitness(fitness);
     }
 
-    private void simulate(Creature creature) {
+	private void simulate(Creature creature) {
+		simulate(creature, false);	
+	}
+
+    private void simulate(Creature creature, boolean force_gui) {
         System.out.println("Simulating: " + encode(creature.getGenotype()));
-        for (int step=0; step < LIFESPAN; step++) {
+        for (int step=0; step < view.LIFESPAN; step++) {
             world.step();
             creature.act();
-            if (DRAW_GUI) {
+            if (DRAW_GUI || force_gui) {
                 try {
                     long waitTime = 1000 / FPS;
                     Thread.sleep(waitTime);
