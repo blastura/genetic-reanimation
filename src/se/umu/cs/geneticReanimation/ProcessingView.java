@@ -26,11 +26,12 @@ public class ProcessingView extends PApplet{
     private boolean recording = false;
 
     // Default values
-    private static int NROFGENERATIONS = 50;
-    private static int POPULATIONSIZE = 20;
-    private static double CROSSOVERRATE = 0.5;
-    private static double MUTATIONRATE = 0.1;
-    private static int LIFESPAN = 4000;
+    public static int NROFGENERATIONS = 50;
+    public static int POPULATIONSIZE = 20;
+    public static double CROSSOVERRATE = 0.5;
+    public static double MUTATIONRATE = 0.1;
+    public static int LIFESPAN = 4000;
+	public static boolean RECORDBEST = false;
 
     public static void main(String args[]) {
         parseParameters(args);
@@ -41,7 +42,7 @@ public class ProcessingView extends PApplet{
     public void setup() {
         println("Processing starts...");
         smooth();
-        this.s = new Simulation(this, NROFGENERATIONS, POPULATIONSIZE, CROSSOVERRATE, MUTATIONRATE, LIFESPAN);
+        this.s = new Simulation(this);
         new Thread(s).start();
         // Prevent draw from looping
         // Update view with redraw()
@@ -74,6 +75,9 @@ public class ProcessingView extends PApplet{
                     try { LIFESPAN = argIntVal(arg); } catch(NumberFormatException e) {}
                     System.out.println("Lifespan: " + LIFESPAN);
                     break;
+				case 'r':
+                    try { RECORDBEST = argBooleanVal(arg); } catch(NumberFormatException e) {}
+                    System.out.println("Record best: " + RECORDBEST);
                 default:
                 }
             }
@@ -82,6 +86,10 @@ public class ProcessingView extends PApplet{
 
     private static int argIntVal(String arg) throws NumberFormatException {
         return Integer.parseInt(arg.substring(2));
+    }
+
+    private static boolean argBooleanVal(String arg) throws NumberFormatException {
+        return (argIntVal(arg) > 0);
     }
 
     private static double argDoubleVal(String arg) throws NumberFormatException {

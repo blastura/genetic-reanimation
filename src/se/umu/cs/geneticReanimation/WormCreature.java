@@ -31,7 +31,6 @@ public class WormCreature implements Creature {
     }
     
     public WormCreature() {
-        // TODO: decide from input output
         this.bodyList = new ArrayList<Body>();
         this.jointList = new ArrayList<Joint>();
         initBody();
