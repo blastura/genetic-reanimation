@@ -15,7 +15,6 @@ import net.phys2d.raw.shapes.Box;
 import net.phys2d.raw.strategies.QuadSpaceStrategy;
 
 public class Simulation implements Runnable {
-    private final String MOVIEPATH = "";
 
     private final boolean DRAW_GUI = false;
     private final int FPS = 600;
@@ -62,11 +61,13 @@ public class Simulation implements Runnable {
                 creature.connectToWorld(world);
                 simulate(creature);
                 calculateFitness(creature);
-
+				
                 // Reset world
-                world.clear();
-                addGround();
-            }
+                //world.clear();
+                //addGround();
+				setupWorld();
+				
+			}
 
             // Record the best one
             if(view.RECORDBEST) { recordBest(i); }
@@ -93,16 +94,25 @@ public class Simulation implements Runnable {
             }
         }
 
+		
         String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
-        
 		bestCreature = new WormCreature(bestCreature.getGenotype());
 		bestCreature.connectToWorld(world);
         recordMovie(filename);
         simulate(bestCreature, true);
         stopMovie();
-		world.clear();
-		addGround();
-    }
+		//world.clear();
+		//addGround(); 
+		setupWorld();
+
+		bestCreature = new WormCreature(bestCreature.getGenotype());
+		bestCreature.connectToWorld(world);
+		simulate(bestCreature);
+        calculateFitness(bestCreature);
+		//world.clear();
+		//addGround(); 
+		setupWorld();
+	}
 
     public World getWorld() {
         return this.world;
@@ -119,10 +129,11 @@ public class Simulation implements Runnable {
 	}
 
     private void simulate(Creature creature, boolean force_gui) {
-        System.out.println("Simulating: " + encode(creature.getGenotype()));
+        //System.out.println("Simulating: " + encode(creature.getGenotype()));
         for (int step=0; step < view.LIFESPAN; step++) {
             world.step();
             creature.act();
+			view.fitness_roevare = (creature.getXPosition()-120.0+360.0);
             if (DRAW_GUI || force_gui) {
                 try {
                     long waitTime = 1000 / FPS;
@@ -144,7 +155,7 @@ public class Simulation implements Runnable {
     }
 
     private void recordMovie(String filename) {
-        String fullname = MOVIEPATH + filename + ".mov";
+        String fullname = view.MOVIEPATH + filename + ".mov";
 
         // Check if file exists
         File file = new File(fullname);

@@ -99,6 +99,7 @@ public class WormCreature implements Creature {
         
         // Affect worm
         for (int i = 0, length = outputs.length; i < length && i < saj.length; i++) {
+			//System.out.print(" " + outputs[i]);
 			float angle = saj[i].getOriginalAngle();
 			float goal = (float)(outputs[i] * Math.PI);
 			if(goal > angle) {
