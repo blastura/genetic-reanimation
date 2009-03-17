@@ -1,0 +1,11 @@
+digraph net {
+   rankdir=LR;
+   node [shape=circle];
+   
+   in [label = "In"];
+   in -> out [label = "w1"]
+   in -> in [label = "w2"]
+   out [label = "Ut"];
+   out -> out [label = "w3"]
+   out -> in [label = "w4"]
+}
