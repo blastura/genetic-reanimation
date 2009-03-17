@@ -24,7 +24,7 @@ public class Simulation implements Runnable {
     //private static final URL RESOURCE_URL = Simulation.class.getResource("/");
     
     private final boolean DRAW_GUI = true;
-    private final int FPS = 30;
+    private final int FPS = 60;
 
     private ProcessingView view;
     private World world;
@@ -106,7 +106,7 @@ public class Simulation implements Runnable {
 
             // Record the best one
             if (ProcessingView.RECORDBEST) { recordBest(i); }
-            if (ProcessingView.SAVE_BEST_TO_FILE) { savePopulation(population, i); }
+            if (ProcessingView.SAVE_POP_TO_FILE) { savePopulation(population, i); }
             
             System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
@@ -229,7 +229,8 @@ public class Simulation implements Runnable {
         //     this.movie = new MovieMaker(view, view.width, view.height, fullname, 20);
 
         // Or, set specific compression and frame rate options
-        this.movie = new MovieMaker(view, view.width, view.height, fullname, FPS,
+        int movieFps = 30;
+        this.movie = new MovieMaker(view, view.width, view.height, fullname, movieFps,
                                     MovieMaker.ANIMATION, MovieMaker.HIGH);
 
 
