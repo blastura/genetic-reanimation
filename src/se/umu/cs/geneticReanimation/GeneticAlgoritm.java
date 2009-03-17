@@ -5,24 +5,23 @@ import se.umu.cs.geneticReanimation.creature.Creature;
 import se.umu.cs.geneticReanimation.creature.WormCreature;
 
 public class GeneticAlgoritm {
-    private static int populationSize;
+    // private static int populationSize;
     private static double crossoverRate;
     private static double mutationRate;
     //private List<Creature> population;
     
-    public GeneticAlgoritm (int populationSize, double crossoverRate,
+    public GeneticAlgoritm (double crossoverRate,
                             double mutationRate) {
-        GeneticAlgoritm.populationSize = populationSize;
         GeneticAlgoritm.crossoverRate = crossoverRate;
         GeneticAlgoritm.mutationRate = mutationRate;
     }
-    
+
     /**
      * Creates a new population
      * @param popSize int for size of the new population
      * @return a List of the new population
      */
-    public List<Creature> createPopulation(){
+    public List<Creature> createPopulation(final int populationSize) {
         List<Creature> population = new ArrayList<Creature>();
         for (int i = 1; i<=populationSize; i++) {
             population.add(createNewCreature());
@@ -64,9 +63,9 @@ public class GeneticAlgoritm {
 
     private static Creature mutate(Creature creature) {
         double[] genotype = creature.getGenotype();
-        for(int i = 0; i<populationSize; i++) {
+        for (int i = 0, length = genotype.length; i < length; i++) {
             if (mutationRate>Math.random()) {
-                genotype[i]= genotype[i] + (Math.random()/2 - 0.5);
+                genotype[i] = genotype[i] + (Math.random()/2 - 0.5);
             }
         }
         creature.setGenotype(genotype);
@@ -86,9 +85,10 @@ public class GeneticAlgoritm {
     }
 
     private static Creature tournamentSelection(final List<Creature> population) {
+        int populationSize = population.size();
         Creature bestParent = null;
         for (int i = 0; i<3; i++) {
-            Creature parent = population.get((int)(Math.random()*populationSize));
+            Creature parent = population.get((int) (Math.random() * populationSize));
             if (bestParent == null || parent.getFitness() >= bestParent.getFitness()) {
                 bestParent = parent;
             }

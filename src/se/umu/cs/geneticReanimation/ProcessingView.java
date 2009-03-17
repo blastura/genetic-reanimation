@@ -29,17 +29,18 @@ public class ProcessingView extends PApplet {
     
     // Default values
     public static int NROFGENERATIONS = 50;
-    public static int POPULATIONSIZE = 20;
-    public static double CROSSOVERRATE = 0.5;
-    public static double MUTATIONRATE = 0.1;
+    public static int POPULATIONSIZE = 100;
+    public static double CROSSOVERRATE = 0.7;
+    public static double MUTATIONRATE = 0.01;
     public static int LIFESPAN = 4000;
-    public static boolean RECORDBEST = false;
-    public static boolean SAVE_BEST_TO_FILE = true;
+    public static boolean RECORDBEST = true;
+    public static boolean SAVE_POP_TO_FILE = true;
 
     public static void main(String args[]) {
         parseParameters(args);
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView"}); // "--present"
     }
+
 
     @Override
     public void setup() {

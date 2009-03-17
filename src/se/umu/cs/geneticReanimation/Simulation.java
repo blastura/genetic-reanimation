@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import net.phys2d.math.Vector2f;
 import net.phys2d.raw.Body;
@@ -18,16 +19,13 @@ import processing.video.MovieMaker;
 
 import se.umu.cs.geneticReanimation.creature.Creature;
 import se.umu.cs.geneticReanimation.creature.WormCreature;
-import java.util.Scanner;
-import java.util.ArrayList;
 
 public class Simulation implements Runnable {
-    private static final URL RESOURCE_URL
-        = Simulation.class.getResource("/resources");
+    //private static final URL RESOURCE_URL = Simulation.class.getResource("/");
     
     private final String MOVIEPATH = "";
-    private final boolean DRAW_GUI = true;
-    private final int FPS = 600;
+    private final boolean DRAW_GUI = false;
+    private final int FPS = 30;
 
     private ProcessingView view;
     private World world;
@@ -42,8 +40,7 @@ public class Simulation implements Runnable {
             initWorld();
             
             // Setup simulation
-            this.ga = new GeneticAlgoritm(ProcessingView.POPULATIONSIZE,
-                                          ProcessingView.CROSSOVERRATE,
+            this.ga = new GeneticAlgoritm(ProcessingView.CROSSOVERRATE,
                                           ProcessingView.MUTATIONRATE);
         } catch (FileNotFoundException e) {
             // TODO - fix error message
@@ -56,10 +53,9 @@ public class Simulation implements Runnable {
         initWorld();
 
         // Setup simulation
-        this.ga = new GeneticAlgoritm(ProcessingView.POPULATIONSIZE,
-                                      ProcessingView.CROSSOVERRATE,
+        this.ga = new GeneticAlgoritm(ProcessingView.CROSSOVERRATE,
                                       ProcessingView.MUTATIONRATE);
-        this.population = this.ga.createPopulation();
+        this.population = this.ga.createPopulation(ProcessingView.POPULATIONSIZE);
     }
 
     /**
@@ -111,7 +107,7 @@ public class Simulation implements Runnable {
 
             // Record the best one
             if (ProcessingView.RECORDBEST) { recordBest(i); }
-            if (ProcessingView.SAVE_BEST_TO_FILE) { savePopulation(population, i); }
+            if (ProcessingView.SAVE_POP_TO_FILE) { savePopulation(population, i); }
             
             System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
@@ -150,10 +146,8 @@ public class Simulation implements Runnable {
     }
     
     private void savePopulation(List<Creature> population, int generation) {
-        // TODO: save generation to file
-        // RESOURCE_URL   
         try {
-            File outFile = new File(RESOURCE_URL.getPath(), "generation-" + generation + ".txt");
+            File outFile = new File(MOVIEPATH + "generation-" + generation + ".txt");
             FileOutputStream out = new FileOutputStream(outFile);
             PrintStream p = new PrintStream(out);
             // TODO: print stuff to p
@@ -193,9 +187,15 @@ public class Simulation implements Runnable {
 
     private void simulate(Creature creature, boolean force_gui) {
         System.out.println("Simulating: " + encode(creature.getGenotype()));
-        for (int step=0; step < ProcessingView.LIFESPAN; step++) {
-            world.step();
-            creature.act();
+        for (int step = 0; step < ProcessingView.LIFESPAN / 8; step++) {
+            
+            // Simulate world and createure more times than framerate, to avoid
+            // totaly slow-mo
+            for (int i = 0; i < 8; i++) {
+                world.step();
+                creature.act();
+            }
+            
             if (DRAW_GUI || force_gui) {
                 try {
                     long waitTime = 1000 / FPS;
@@ -228,7 +228,7 @@ public class Simulation implements Runnable {
         //     this.movie = new MovieMaker(view, view.width, view.height, fullname, 20);
 
         // Or, set specific compression and frame rate options
-        this.movie = new MovieMaker(view, view.width, view.height, fullname, 30,
+        this.movie = new MovieMaker(view, view.width, view.height, fullname, FPS,
                                     MovieMaker.ANIMATION, MovieMaker.HIGH);
 
 

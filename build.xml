@@ -57,7 +57,7 @@
     <!--     </copy> -->
 
     <!-- Compile source -->
-    <javac srcdir="${src.dir}" destdir="${build.main.dir}" debug="on">
+    <javac srcdir="${src.dir}" source="1.5" destdir="${build.main.dir}" debug="on">
       <classpath refid="project.classpath" />
       <!-- <compilerarg value="-Xlint:unchecked"/> -->
     </javac>
