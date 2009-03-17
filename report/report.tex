@@ -134,7 +134,7 @@ Kan vi återskapa Sims Rapport? WWKSD? What whould Karl Sims do? Bigup!
 
 Abstract Sammanfattning
 Introduction Introduktion
-    - Några tidigare studier
+    - Några tidigare studierd
     - Frågeställning/Syfte
     - Vad vi har gjort
 Creature Control Kontroll av varelser
@@ -170,12 +170,21 @@ Garis har utvecklat en simulerad ödla som han kallar LIZZY \cite{garis}. LIZZY 
 
 \subsection{Syfte}
 % Frågeställning fylls i här typ
-%Survival of the fit
+
+Kan en GA hitta ett naturligt rörelsemönster för ett enkelt 2d-djur? 
+Hur effektiva är GAs på att hitta fungerande rörelsemönster? 
+Kan vi upprepa Browns, Nicolas Lassabe eller Karl Sims simuleringar i en 
+2D-miljö? 
+
+Alt1. 
+
 
 \section{Metodbeskrivning, Vad vi har gjort}
 % Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna
 % reproducera ert arbete
-% Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och Fysiksimuleringen.
+% Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och Fysiksimuleringen. 
+Vi har utvecklat ett system som utvecklar kroppars rörelsemönster med hjälp av en genetisk algoritm. Kroppens rörelse bestäms av ett neuralt nät och simuleras i en fysikmotor.
+% Alltid en början av en början...
 
 
 \subsection{Kontroll av varelser}
@@ -196,11 +205,28 @@ Garis har utvecklat en simulerad ödla som han kallar LIZZY \cite{garis}. LIZZY 
 
 \subsubsection{Neuralt nät}
 % Neuroner
-Varelsens hjärna består av ett neuralt nät som styr dess beteende. Det neurala nätet är vagt implementerat enligt Hopfields modell för neurala nät, se kapitel 13 i boken textit{Neural networks: a systematic introduction}, \cite{raul}. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt.
+Varelsens hjärna består av ett neuralt nät som styr dess beteende. Det neurala nätet är vagt implementerat enligt Hopfields modell för neurala nät, se kapitel 13 i boken \textit{Neural networks: a systematic introduction}, se \cite{raul}. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt.
 
-För att mata nätet med indata tas värden emot och körs genom en sigmoid funktion $1/\frac{1}{e^{-x}}$.
+För att mata nätet med indata tas värden emot och körs genom en sigmoid funktion $1/\frac{1}{e^{-x}}$. Denna funktion är modifierad för att ge resultat mellan -1 och 1. Javakod som körs visas i kodsnutt \ref{kod:sigmoid}
 
-Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1. 
+\begin{kod}
+\begin{footnotesize}
+\begin{verbatim}
+2 / (1 + Math.pow(Math.E, (-2 * x))) - 1
+\end{verbatim}
+\end{footnotesize}
+\caption{Sigmoid (java)}\label{kod:sigmoid}
+\end{kod}
+
+Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1.
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=78mm]{images/neuralnet.pdf}
+    \caption{Neuralt nätverk med två noder}
+    \label{fig:neuralnet.pdf}
+  \end{center}
+\end{figure}
 
 %tänkte mig lista klasser här så det blir en systemöversikt? 
 %\begin{enumerate}[(a)]
@@ -228,6 +254,38 @@ Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärn
 \begin{figure}
     \includegraphics[width=78mm]{images/maskninja.png}
 \end{figure}
+
+-34.6358039855957	-5.2322540283203125
+-18.24432830810547	39.70292663574219
+-14.486499786376953	39.70220947265625
+-3.3265899658203124	61.23805236816406
+-9.420597076416016	80.82241821289062
+-2.541945608038651	87.39546203613281
+3.548807480755974	81.83610534667969
+8.633655124240452	100.64521789550781
+
+
+-25.854436492919923	63.74101257324219
+-13.107375335693359	70.67256164550781
+-9.300043487548828	81.12055969238281
+-28.86897679379112	38.43251037597656
+13.848107874393463	239.08647847175598
+-28.59629652374669	237.60971236228943
+4.116374003887176	237.597829580307
+1.4083959221839906	365.5415802001953
+16.758824398643092	498.77978515625
+9.69740210639106	498.6872253417969
+24.18791439658717	498.21331787109375
+7.5698699951171875	492.76136779785156
+-2.252584357010691	492.7564392089844
+-4.965674149362664	492.75433349609375
+48.45077048407661	485.5240478515625
+14.223643654271177	485.52587890625
+36.00650872124566	575.3929138183594
+48.08240852355957	576.4092712402344
+10.025600051879882	576.4110107421875
+44.0106450131065	576.4188842773438
+
 \section{Diskussion}
 % Diskussion av resultatet, koppling till tidigare studier
 

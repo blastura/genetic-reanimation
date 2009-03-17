@@ -100,7 +100,7 @@ public class Simulation implements Runnable {
      */
     public void run() {
         for (int i = 0; i < ProcessingView.NROFGENERATIONS; i++) {
-            System.out.println("Generation " + (i+1) + " is starting...");
+            //System.out.println("Generation " + (i+1) + " is starting...");
             for (Creature creature : population) {
                 creature.connectToWorld(world);
                 simulate(creature);
@@ -113,10 +113,28 @@ public class Simulation implements Runnable {
             if (ProcessingView.RECORDBEST) { recordBest(i); }
             if (ProcessingView.SAVE_BEST_TO_FILE) { savePopulation(population, i); }
             
-            System.out.println("Generation " + (i+1) + " is done.");
+			Creature bestCreature = population.get(0);
+        	double bestFitness = bestCreature.getFitness();
+			double sum = 0;
+			int amount = 0;
+       		for (Creature creature : population) {
+				if(!Double.valueOf(creature.getFitness()).isNaN()) {
+					sum += creature.getFitness();
+					amount++;
+				}
+            	if (bestFitness < creature.getFitness()) {
+                	bestCreature = creature;
+                	bestFitness = bestCreature.getFitness();
+            	}
+        	}
+
+			System.out.println("Medel:" + sum/amount);
+			System.out.println("Max:" + bestFitness);
+
+            //System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
         }
-        System.out.println("Simulation ended.");
+        //System.out.println("Simulation ended.");
     }
     
     /**
@@ -184,7 +202,7 @@ public class Simulation implements Runnable {
 
     private void calculateFitness(Creature creature) {
         double fitness = creature.getXPosition()-120+360; // -worm length + worm startpos
-        System.out.println("Fitness: " + fitness);
+        //System.out.println("Fitness: " + fitness);
         creature.setFitness(fitness);
     }
 
@@ -193,7 +211,7 @@ public class Simulation implements Runnable {
     }
 
     private void simulate(Creature creature, boolean force_gui) {
-        System.out.println("Simulating: " + encode(creature.getGenotype()));
+        //System.out.println("Simulating: " + encode(creature.getGenotype()));
         for (int step=0; step < ProcessingView.LIFESPAN; step++) {
             world.step();
             creature.act();
