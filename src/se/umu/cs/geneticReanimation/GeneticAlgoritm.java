@@ -39,10 +39,21 @@ public class GeneticAlgoritm {
     public final List<Creature> createNextGeneration(final List<Creature> oldPopulation) {
         int populationSize = oldPopulation.size();
         ArrayList<Creature> newPopulation = new ArrayList<Creature>();
+        
+        Creature bestCreature = oldPopulation.get(0);
+        double bestFitness = bestCreature.getFitness();
+        for (Creature creature : oldPopulation) {
+            if (bestFitness < creature.getFitness()) {
+                bestCreature = creature;
+                bestFitness = bestCreature.getFitness();
+            }
+        }
+        newPopulation.add(bestCreature);
+        
 
         Creature parent1;
         Creature parent2;
-        for (int i = 0; i <= (populationSize * crossoverRate); i += 2) {
+        for (int i = 1; i <= (populationSize * crossoverRate); i += 2) {
             parent1 = tournamentSelection(oldPopulation);
             parent2 = tournamentSelection(oldPopulation);
             newPopulation.add(crossover(parent1, parent2));
