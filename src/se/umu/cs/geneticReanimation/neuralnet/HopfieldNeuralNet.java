@@ -7,16 +7,10 @@ public class HopfieldNeuralNet implements Brain {
     
     public HopfieldNeuralNet(final double[] genotype) {
         setGenotype(genotype);
-        // TODO:
-    }
-    
-    public HopfieldNeuralNet(int size) {
-        this.weightMatrix = new double[size][size];
-        // TODO: create random weights
-        this.nodes = new double[size];
     }
 
     public void setGenotype(final double[] genotype) {
+        // TODO: Validate genotype values should be between [-1, 1]
         double sqrt = Math.sqrt(genotype.length);
         if (sqrt % 1 != 0 || genotype.length < 4) {
             String errorMsg = "Genotype length must be bigger than 3 and have "
@@ -46,18 +40,6 @@ public class HopfieldNeuralNet implements Brain {
         }
         return result;
     }
-    
-    //     public void setWeightMatrix(final double weightMatrix[][]) {
-    //         // Check values
-    //         for (double[] row : weightMatrix) {
-    //             for (double value: row) {
-    //                 if (value < -1 || value > 1) {
-    //                     throw new IllegalArgumentException("Values must be between -1 and 1");
-    //                 }
-    //             }
-    //         }
-    //         this.weightMatrix = weightMatrix;
-    //     }
     
     public double[][] getWeightMatrix() {
         return this.weightMatrix;

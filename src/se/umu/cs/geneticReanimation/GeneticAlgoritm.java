@@ -1,28 +1,29 @@
 package se.umu.cs.geneticReanimation;
 
 import java.util.*;
+import se.umu.cs.geneticReanimation.creature.Creature;
+import se.umu.cs.geneticReanimation.creature.WormCreature;
 
 public class GeneticAlgoritm {
-    private int populationSize;
-    private double crossoverRate;
-    private double mutationRate;
-    private List<Creature> population;
-
-
-    public GeneticAlgoritm (int populationSize,
-                            double crossoverRate, double mutationRate) {
-        this.populationSize = populationSize;
-        this.crossoverRate = crossoverRate;
-        this.mutationRate = mutationRate;
+    private static int populationSize;
+    private static double crossoverRate;
+    private static double mutationRate;
+    //private List<Creature> population;
+    
+    public GeneticAlgoritm (int populationSize, double crossoverRate,
+                            double mutationRate) {
+        GeneticAlgoritm.populationSize = populationSize;
+        GeneticAlgoritm.crossoverRate = crossoverRate;
+        GeneticAlgoritm.mutationRate = mutationRate;
     }
-
+    
     /**
      * Creates a new population
      * @param popSize int for size of the new population
      * @return a List of the new population
      */
     public List<Creature> createPopulation(){
-        population = new ArrayList<Creature>();
+        List<Creature> population = new ArrayList<Creature>();
         for (int i = 1; i<=populationSize; i++) {
             population.add(createNewCreature());
         }
@@ -35,22 +36,22 @@ public class GeneticAlgoritm {
      * @param oldPopulation List over the old population
      * @return
      */
-    public List<Creature> createNextGeneration(List<Creature> oldPopulation) {
-        this.population = oldPopulation;
+    public final List<Creature> createNextGeneration(final List<Creature> oldPopulation) {
+        int populationSize = oldPopulation.size();
         ArrayList<Creature> newPopulation = new ArrayList<Creature>();
 
         Creature parent1;
         Creature parent2;
-        for (int i = 0; i <= (populationSize*crossoverRate); i+=2) {
-            parent1 = tournamentSelection();
-            parent2 = tournamentSelection();
+        for (int i = 0; i <= (populationSize * crossoverRate); i += 2) {
+            parent1 = tournamentSelection(oldPopulation);
+            parent2 = tournamentSelection(oldPopulation);
             newPopulation.add(crossover(parent1, parent2));
             newPopulation.add(crossover(parent2, parent1));
         }
 
         for (int i = newPopulation.size(); i < populationSize; i++) {
-            parent1 = tournamentSelection();
-			Creature newParent = new WormCreature(parent1.getGenotype());
+            parent1 = tournamentSelection(oldPopulation);
+            Creature newParent = new WormCreature(parent1.getGenotype());
             newPopulation.add(newParent);
         }
 
@@ -58,25 +59,24 @@ public class GeneticAlgoritm {
             mutate(newPopulation.get(i));
         }
 
-        population = newPopulation;
-		System.out.println(population.size());
-        return population;
+        return newPopulation;
     }
 
-    private void mutate(Creature creature) {
+    private static Creature mutate(Creature creature) {
         double[] genotype = creature.getGenotype();
         for(int i = 0; i<populationSize; i++) {
             if (mutationRate>Math.random()) {
                 genotype[i]= genotype[i] + (Math.random()/2 - 0.5);
             }
         }
-		creature.setGenotype(genotype);
+        creature.setGenotype(genotype);
+        return creature;
     }
 
-    private Creature crossover(Creature parent1, Creature parent2) {
+    private static Creature crossover(Creature parent1, Creature parent2) {
         double[] parent2Genotype = parent2.getGenotype();
         int genotypeSize = parent2Genotype.length;
-        
+
         double[] childGenotype = parent1.getGenotype();
         for (int i = genotypeSize/2; i<genotypeSize; i++) {
             childGenotype[i]=parent2Genotype[i];
@@ -85,7 +85,7 @@ public class GeneticAlgoritm {
         return child;
     }
 
-    private Creature tournamentSelection() {
+    private static Creature tournamentSelection(final List<Creature> population) {
         Creature bestParent = null;
         for (int i = 0; i<3; i++) {
             Creature parent = population.get((int)(Math.random()*populationSize));
@@ -96,7 +96,7 @@ public class GeneticAlgoritm {
         return bestParent;
     }
 
-    private Creature createNewCreature() {
+    private static Creature createNewCreature() {
         return new WormCreature();
     }
 }
