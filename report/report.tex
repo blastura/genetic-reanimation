@@ -171,24 +171,39 @@ Garis har utvecklat en simulerad ödla som han kallar LIZZY \cite{garis}. LIZZY 
 \subsection{Syfte}
 % Frågeställning fylls i här typ
 
-Kan en GA hitta ett naturligt rörelsemönster för ett enkelt 2d-djur? 
-Hur effektiva är GAs på att hitta fungerande rörelsemönster? 
+Kan en GA hitta ett naturligt rörelsemönster för ett enkelt 2d-djur? 
+Hur effektiva är GAs på att hitta fungerande rörelsemönster? 
 Kan vi upprepa Browns, Nicolas Lassabe eller Karl Sims simuleringar i en 
-2D-miljö? 
-
-Alt1. 
+2D-miljö? åäö.
 
 
 \section{Metodbeskrivning, Vad vi har gjort}
 % Metodbeskrivning. Ska beskrivas så utförligt att läsaren ska kunna
 % reproducera ert arbete
 % Systemet består av tre stora delar. Den genetiska algoritmen (GA), Hjärnan och Fysiksimuleringen. 
-Vi har utvecklat ett system som utvecklar kroppars rörelsemönster med hjälp av en genetisk algoritm. Kroppens rörelse bestäms av ett neuralt nät och simuleras i en fysikmotor.
+Vi har utvecklat ett system som utvecklar kroppars rörelsemönster med hjälp av en genetisk algoritm. Kroppen simuleras i en fysikmotor och rörelsen bestäms av ett neuralt nät där indata kommer från simuleringsvärlden och utdata ansätts till varelsens effektorer. Fitnessfunktionen beräknas enligt längden varelsen har tagit sig på sin förinställda livslängd.
+
 % Alltid en början av en början...
 
-
 \subsection{Kontroll av varelser}
+I följande stycke presenteras en översikt av hur en varelse är uppbyggd och hur den reagerar/agerar på omvärlden.
+
+\subsubsection{Uppbyggnad av varelse}\label{sec:uppbyggnadVarelse}
+Varelsen består av en mask med 4 leder och 5 kroppsdelar, se \ref{fig:creature.pdf}. Varje led kan röra sig 180 grader. Varje kroppsdel har en sensor som ger \textit{hjärnan} indata om dess y-position i förhållande till delen utmed. Att en maskliknande varelse har valts beror på att kroppen är relativ enkel i sin sammansättning och komplexiteten sjunker således. Kroppsdelarnas vikt, ledernas typ och ledernas rörelsefrihet har valts efter eget tycke då varelsen ses som ett inledande exempel på hur systemet kan fungera. Valet av indata för varelsen grundas i en önskan om ledernas vetskap om varandra.
+
+\begin{figure}[H]
+  \begin{center}
+    %\includegraphics[width=78mm]{images/creature.pdf}
+    \caption{Representation av varelse}
+    \label{fig:creature.pdf}
+  \end{center}
+\end{figure}
+
 \subsubsection{Sensorer}
+Varelsens sensorer räknas ut som differenser mellan kroppdelars y-position. Antalet sensorer/indata blir ett mindre än antalet kroppsdelar då de räknas ut mellan närliggande kroppsdelar.
+
+FIXIT!
+
 % Bodies, getXposiotion() typ!!!!! <<<<<<< typ jag skrev typ
 %VADÅ TYP
 
@@ -198,16 +213,19 @@ Vi har utvecklat ett system som utvecklar kroppars rörelsemönster med hjälp a
 %            inputs[i] = b1-b2;
 %}
         
-%EXAKT!
+%EXAKT!!
 
 \subsubsection{Effektorer}
 % Joints
+Varelsens effektorer utgörs i implementationen av en viss typ av leder som krafter kan appliceras på. Efter att varelsens \textit{hjärna} har bearbetat indata så hämtas utdata som nu kommer att vara mellan -1 och 1. Denna utdata multiplicaras med $\pi$ för att få en vinkel mellan $-\pi$ och $\pi$, det resulterade värdet låtes påverka leden, som i sin tur påverkar de två kroppar leden är fäst vid.
 
 \subsubsection{Neuralt nät}
 % Neuroner
 Varelsens hjärna består av ett neuralt nät som styr dess beteende. Det neurala nätet är vagt implementerat enligt Hopfields modell för neurala nät, se kapitel 13 i boken \textit{Neural networks: a systematic introduction}, se \cite{raul}. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt.
 
-För att mata nätet med indata tas värden emot och körs genom en sigmoid funktion $1/\frac{1}{e^{-x}}$. Denna funktion är modifierad för att ge resultat mellan -1 och 1. Javakod som körs visas i kodsnutt \ref{kod:sigmoid}
+För att mata nätet med indata tas värden emot och körs genom en sigmoid funktion $1/\frac{1}{1 + e^{-x}}$. Denna funktion är modifierad för att ge resultat mellan -1 och 1. Javakod för sigmoid-funktionen som används visas i kodsnutt \ref{kod:sigmoid}. Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1.
+
+Det görs ingen skillnad bland noderna i nätetet med avseende på vilka som tar emot och ger ifrån sig in- och utdata. Det neuralal nätet tar emot indata i from av en vektor, positionen värdena har i vektorn avgör vilken nod i nätet som kommer att ta emot datan.
 
 \begin{kod}
 \begin{footnotesize}
@@ -217,8 +235,6 @@ För att mata nätet med indata tas värden emot och körs genom en sigmoid funk
 \end{footnotesize}
 \caption{Sigmoid (java)}\label{kod:sigmoid}
 \end{kod}
-
-Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1.
 
 \begin{figure}[H]
   \begin{center}
@@ -235,15 +251,31 @@ Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet b
 %\end{enumerate}
 
 \subsection{Simulering}
-Fysiksimuleringen använder biblioteket \textit{phys2d} \cite{phys2d} för själva fysiken. Detta bibliotek är skrivet av Kevin Glass och är en Java-portning av Erin Catto's plattform \textit{box2d} \cite{box2d}. Denna platform valdes på grund av att den bygger på Java och gruppen besitter kompetens inom språket. I simuleringen har ett markplan skapats och på detta en varelse. 
+Fysiksimuleringen använder biblioteket \textit{phys2d} \cite{phys2d} för själva fysiken. Detta bibliotek är skrivet av Kevin Glass och är en Java-variant av Erin Catto's plattform \textit{box2d} \cite{box2d}. Denna platform valdes på grund av att den bygger på Java och gruppen besitter kompetens inom språket. I simuleringen har ett markplan skapats och på detta en varelse. 
 
-Varelsen består av en mask med 4 leder och 5 kroppsdelar. Varje led kan röra sig 180 grader. Varje kroppsdel har en sensor som ger \textit{hjärnan} indata om dess y-position i förhållande till delen utmed. Att en maskliknande varelse har valts beror på att kroppen är relativ enkel i sin sammansättning och komplexiteten sjunker således. Kroppsdelarnas vikt, ledernas typ och ledernas rörelsefrihet har valts efter eget tycke då varelsen ses som ett inledande exempel på hur systemet kan fungera. Valet av indata för varelsen grundas i en önskan om ledernas vetskap om varandra.
+
 
 
 \subsection{Genetisk algoritm}
-För selektion används en variant på tournament selection. Två grupper om tre individer väljs slumpmässigt och de med högst fitness ur respektive grupp korsas så två nya varelser med en blandning av deras genotyp skapas. Detta upprepas tills en bestämd del av en ny population har skapats. Därefter väljs fler grupper av tre där de bästa direkt går till den nya populationen oförändrade tills den nya populationen har samma storlek som den gamla. Varje individ i den nya populationen muterar varje del av sin genotyp med en viss sannolikhet. Den nya populationen ersätter därefter den gamla. 
+För selektion används en variant på tournament selection. Först skapas en ny tom population, den bästa individen från föregående generation kopieras sedan in i den nya populationen. Två grupper om tre individer väljs sedan slumpmässigt och de med högst fitness ur respektive grupp korsas så två nya varelser med en blandning av deras genotyp skapas. Detta upprepas tills en bestämd del av en ny population har skapats, detta bestäms av mutation-rate i programmet. Därefter väljs fler grupper av tre där de bästa direkt går till den nya populationen oförändrade tills den nya populationen har samma storlek som den gamla. Varje individ utom den första med högst fitness i den nya populationen muterar sedan varje del av sin genotyp med en viss sannolikhet. Den nya populationen ersätter därefter den gamla. 
 		
 Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärna. För att evaluera fitness för varje individ skapas ett nät med de vikter genotypen anger, detta får sedan under en begränsad tid styra en fast kropp i en fysiksimulering. Fitness beräknas på hur långt kroppen lyckats röra sig.
+
+\begin{enumerate}
+\item skapa en ny tom population
+\item kopiera över den individ med högst fitness från föregående generation till den nya populationen
+\item upprepa till den bestämda andel crossover till nya generationen är utförd
+\begin{enumerate}
+\item välj ut två grupper om tre individer
+\item utför crossover på den individ med högst fitness från respektive grupp och lägg över deras barn till den nya populationen
+\end{enumerate}
+\item upprepa till den nya populationen har samma storlek som den föregående generationen
+\begin{enumerate}
+\item välj grupp om tre individer
+\item kopiera över den individ med högst fitness från de tre
+\end{enumerate}
+\item mutera varje individ utom den första med högst fitness
+\end{enumerate}
 
 \section{Resultat}
 % Resultat innehållande sammanställning/analys av tester
@@ -255,38 +287,41 @@ Genotypen i varelsen kodar för vikter i det neurala nät som utgör dess hjärn
     \includegraphics[width=78mm]{images/maskninja.png}
 \end{figure}
 
--34.6358039855957	-5.2322540283203125
--18.24432830810547	39.70292663574219
--14.486499786376953	39.70220947265625
--3.3265899658203124	61.23805236816406
--9.420597076416016	80.82241821289062
--2.541945608038651	87.39546203613281
-3.548807480755974	81.83610534667969
-8.633655124240452	100.64521789550781
+\begin{figure}
+    \includegraphics[width=78mm]{images/diagram4.png}
+\end{figure}
 
+\begin{figure}
+    \includegraphics[width=78mm]{images/diagram3.png}
+\end{figure}
 
--25.854436492919923	63.74101257324219
--13.107375335693359	70.67256164550781
--9.300043487548828	81.12055969238281
--28.86897679379112	38.43251037597656
-13.848107874393463	239.08647847175598
--28.59629652374669	237.60971236228943
-4.116374003887176	237.597829580307
-1.4083959221839906	365.5415802001953
-16.758824398643092	498.77978515625
-9.69740210639106	498.6872253417969
-24.18791439658717	498.21331787109375
-7.5698699951171875	492.76136779785156
--2.252584357010691	492.7564392089844
--4.965674149362664	492.75433349609375
-48.45077048407661	485.5240478515625
-14.223643654271177	485.52587890625
-36.00650872124566	575.3929138183594
-48.08240852355957	576.4092712402344
-10.025600051879882	576.4110107421875
-44.0106450131065	576.4188842773438
+\begin{figure}
+    \includegraphics[width=78mm]{images/diagram_m01c08_2.png}
+\end{figure}
+
 
 \section{Diskussion}
+
+Ofta går fitness upp väldigt snabbt och ligger sedan stabilt. Utvecklingen sker i etapper istället för kontinueligt. Detta kan liknas vid naturlig evolution som också sker etappvis. 
+
+Det rörelsemönster som gett mest framgång i våra studier är ett rullande eller rull-hoppande beteende. En förklaring till att detta mönster är vanligt i våra simuleringar, men inte i verkligheten kan vara att 2D-maskar inte kan tippa i sidled. Det är även tänkbart att våra simulerade maskar är starkare än naturliga motsvarigheter. 
+
+
+
+Det går upp, sen stagnerar det
+
+Maxvärdet ökar
+Medel ökar lite
+Det blir bättre med tiden, typ
+ibland blir det sämre
+
+Rullning är effektivt
+
+Masknarna är inkonsekventa och instabila
+
+
+
+
 % Diskussion av resultatet, koppling till tidigare studier
 
 \bibliographystyle{alpha}

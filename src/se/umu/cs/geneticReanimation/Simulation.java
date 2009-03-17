@@ -23,7 +23,7 @@ import se.umu.cs.geneticReanimation.creature.WormCreature;
 public class Simulation implements Runnable {
     //private static final URL RESOURCE_URL = Simulation.class.getResource("/");
     
-    private final boolean DRAW_GUI = true;
+    private final boolean DRAW_GUI = false;
     private final int FPS = 60;
 
     private ProcessingView view;
@@ -110,12 +110,16 @@ public class Simulation implements Runnable {
             
 			Creature bestCreature = population.get(0);
         	double bestFitness = bestCreature.getFitness();
+			double minFitness = bestFitness;
 			double sum = 0;
 			int amount = 0;
        		for (Creature creature : population) {
 				if(!Double.valueOf(creature.getFitness()).isNaN()) {
 					sum += creature.getFitness();
 					amount++;
+				}
+				if(minFitness > creature.getFitness()) {
+					minFitness = creature.getFitness();
 				}
             	if (bestFitness < creature.getFitness()) {
                 	bestCreature = creature;
@@ -125,6 +129,8 @@ public class Simulation implements Runnable {
 
 			System.out.println("Medel:" + sum/amount);
 			System.out.println("Max:" + bestFitness);
+			System.out.println("Min:" + minFitness);
+
 
             //System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
@@ -204,7 +210,7 @@ public class Simulation implements Runnable {
     }
 
     private void simulate(Creature creature, boolean force_gui) {
-        System.out.println("Simulating: " + encode(creature.getGenotype()));
+        //System.out.println("Simulating: " + encode(creature.getGenotype()));
         for (int step = 0; step < ProcessingView.LIFESPAN / 8; step++) {
             
             // Simulate world and createure more times than framerate, to avoid
