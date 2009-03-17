@@ -65,7 +65,7 @@ public class GeneticAlgoritm {
             newPopulation.add(newParent);
         }
 
-        for (int i = 0; i < populationSize; i++) {
+        for (int i = 1; i < populationSize; i++) {
             mutate(newPopulation.get(i));
         }
 
