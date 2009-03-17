@@ -25,10 +25,10 @@ public class ProcessingView extends PApplet {
 
     private Simulation s;
     private boolean recording = false;
-	public double fitness_roevare = 0.0;
+    public double fitness_roevare = 0.0;
 
     private static File generationFile;
-    
+
     // Default values
     public static int NROFGENERATIONS = 50;
     public static int POPULATIONSIZE = 10;
@@ -41,7 +41,7 @@ public class ProcessingView extends PApplet {
 
     public static void main(String args[]) {
         parseParameters(args);
-        PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView"}); // "--present"
+        PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView"});
     }
 
     @Override
@@ -57,15 +57,16 @@ public class ProcessingView extends PApplet {
         // Prevent draw from looping
         // Update view with redraw()
         noLoop();
-		PFont font = createFont("Helvectica", 12); 
-		textFont(font); 
+        PFont font = createFont("Helvectica", 12);
+        textFont(font);
     }
 
     private static void parseParameters(String[] args) {
         for(String arg : args) {
             if(arg.charAt(0) == '-') {
-                // By catching the NumberFormatExceptions we make it possible
-                // to check the value of a parameter by just giving the parameter name, ex: -p
+                // By catching the NumberFormatExceptions we make it possible to
+                // check the value of a parameter by just giving the parameter
+                // name, ex: -p
                 switch(arg.charAt(1)) {
                 case 'f':
                     generationFile = new File(arg.substring(2));
@@ -93,11 +94,9 @@ public class ProcessingView extends PApplet {
                 case 'r':
                     try { RECORDBEST = argBooleanVal(arg); } catch(NumberFormatException e) {}
                     System.out.println("Record best: " + RECORDBEST);
-				case 'v':
-					MOVIEPATH = arg.substring(2);
+                case 'v':
+                    MOVIEPATH = arg.substring(2);
                     System.out.println("Movie path: " + MOVIEPATH);
-
-					
                 default:
                 }
             }
@@ -150,10 +149,10 @@ public class ProcessingView extends PApplet {
             for (int i = 0, length = joints.size(); i < length; i++) {
                 drawJoint(joints.get(i));
             }
-            
-			text(String.valueOf(fitness_roevare), width/2-100, 10);
-			
-			popMatrix();
+
+            text(String.valueOf(fitness_roevare), width/2-100, 10);
+
+            popMatrix();
             if (recording) {
                 s.getMovie().addFrame();
             }
@@ -282,9 +281,14 @@ public class ProcessingView extends PApplet {
 
 
             stroke(255, 0, 0);
-            line((int)p1.x,(int)p1.y,(int)(p1.x+im.x*joint.getMinDistance()),(int)(p1.y+im.y*joint.getMinDistance()));
+            line((int)p1.x, (int)p1.y,
+                 (int)(p1.x+im.x*joint.getMinDistance()),
+                 (int)(p1.y+im.y*joint.getMinDistance()));
             stroke(0, 255, 0);
-            line((int)(p1.x+im.x*joint.getMinDistance()),(int)(p1.y+im.y*joint.getMinDistance()),(int)(p1.x+im.x*joint.getMaxDistance()),(int)(p1.y+im.y*joint.getMaxDistance()));
+            line((int)(p1.x+im.x*joint.getMinDistance()),
+                 (int)(p1.y+im.y*joint.getMinDistance()),
+                 (int)(p1.x+im.x*joint.getMaxDistance()),
+                 (int)(p1.y+im.y*joint.getMaxDistance()));
         }
 
         if (j instanceof AngleJoint){
