@@ -25,22 +25,24 @@ public class ProcessingView extends PApplet {
 
     private Simulation s;
     private boolean recording = false;
+	public double fitness_roevare = 0.0;
+
     private static File generationFile;
     
     // Default values
     public static int NROFGENERATIONS = 50;
-    public static int POPULATIONSIZE = 100;
+    public static int POPULATIONSIZE = 10;
     public static double CROSSOVERRATE = 0.7;
     public static double MUTATIONRATE = 0.01;
     public static int LIFESPAN = 4000;
-    public static boolean RECORDBEST = true;
-    public static boolean SAVE_POP_TO_FILE = true;
+    public static boolean RECORDBEST = false;
+    public static String MOVIEPATH = "";
+    public static boolean SAVE_BEST_TO_FILE = true;
 
     public static void main(String args[]) {
         parseParameters(args);
         PApplet.main(new String[] {"se.umu.cs.geneticReanimation.ProcessingView"}); // "--present"
     }
-
 
     @Override
     public void setup() {
@@ -55,6 +57,8 @@ public class ProcessingView extends PApplet {
         // Prevent draw from looping
         // Update view with redraw()
         noLoop();
+		PFont font = createFont("Helvectica", 12); 
+		textFont(font); 
     }
 
     private static void parseParameters(String[] args) {
@@ -89,6 +93,11 @@ public class ProcessingView extends PApplet {
                 case 'r':
                     try { RECORDBEST = argBooleanVal(arg); } catch(NumberFormatException e) {}
                     System.out.println("Record best: " + RECORDBEST);
+				case 'v':
+					MOVIEPATH = arg.substring(2);
+                    System.out.println("Movie path: " + MOVIEPATH);
+
+					
                 default:
                 }
             }
@@ -110,6 +119,7 @@ public class ProcessingView extends PApplet {
     public void setRecording(boolean b) {
         this.recording  = b;
     }
+
 
     @Override
     public void mousePressed() {
@@ -140,8 +150,10 @@ public class ProcessingView extends PApplet {
             for (int i = 0, length = joints.size(); i < length; i++) {
                 drawJoint(joints.get(i));
             }
-            popMatrix();
-
+            
+			text(String.valueOf(fitness_roevare), width/2-100, 10);
+			
+			popMatrix();
             if (recording) {
                 s.getMovie().addFrame();
             }

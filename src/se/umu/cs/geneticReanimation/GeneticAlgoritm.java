@@ -64,8 +64,8 @@ public class GeneticAlgoritm {
     private static Creature mutate(Creature creature) {
         double[] genotype = creature.getGenotype();
         for (int i = 0, length = genotype.length; i < length; i++) {
-            if (mutationRate>Math.random()) {
-                genotype[i] = genotype[i] + (Math.random()/2 - 0.5);
+            if (mutationRate > Math.random()) {
+                genotype[i] = (Math.random() * 2 - 1);
             }
         }
         creature.setGenotype(genotype);
@@ -77,7 +77,7 @@ public class GeneticAlgoritm {
         int genotypeSize = parent2Genotype.length;
 
         double[] childGenotype = parent1.getGenotype();
-        for (int i = genotypeSize/2; i<genotypeSize; i++) {
+        for (int i = (int)(Math.random()*genotypeSize); i<genotypeSize; i++) {
             childGenotype[i]=parent2Genotype[i];
         }
         Creature child = new WormCreature(childGenotype);

@@ -23,8 +23,7 @@ import se.umu.cs.geneticReanimation.creature.WormCreature;
 public class Simulation implements Runnable {
     //private static final URL RESOURCE_URL = Simulation.class.getResource("/");
     
-    private final String MOVIEPATH = "";
-    private final boolean DRAW_GUI = false;
+    private final boolean DRAW_GUI = true;
     private final int FPS = 30;
 
     private ProcessingView view;
@@ -107,7 +106,7 @@ public class Simulation implements Runnable {
 
             // Record the best one
             if (ProcessingView.RECORDBEST) { recordBest(i); }
-            if (ProcessingView.SAVE_POP_TO_FILE) { savePopulation(population, i); }
+            if (ProcessingView.SAVE_BEST_TO_FILE) { savePopulation(population, i); }
             
             System.out.println("Generation " + (i+1) + " is done.");
             this.population = ga.createNextGeneration(this.population);
@@ -131,6 +130,7 @@ public class Simulation implements Runnable {
             }
         }
 
+		
         String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
 
         bestCreature = new WormCreature(bestCreature.getGenotype());
@@ -147,7 +147,7 @@ public class Simulation implements Runnable {
     
     private void savePopulation(List<Creature> population, int generation) {
         try {
-            File outFile = new File(MOVIEPATH + "generation-" + generation + ".txt");
+            File outFile = new File(ProcessingView.MOVIEPATH + "generation-" + generation + ".txt");
             FileOutputStream out = new FileOutputStream(outFile);
             PrintStream p = new PrintStream(out);
             // TODO: print stuff to p
@@ -195,6 +195,7 @@ public class Simulation implements Runnable {
                 world.step();
                 creature.act();
             }
+            view.fitness_roevare = (creature.getXPosition()-120.0+360.0);
             
             if (DRAW_GUI || force_gui) {
                 try {
@@ -217,7 +218,7 @@ public class Simulation implements Runnable {
     }
 
     private void recordMovie(String filename) {
-        String fullname = MOVIEPATH + filename + ".mov";
+        String fullname = view.MOVIEPATH + filename + ".mov";
 
         // Check if file exists
         File file = new File(fullname);
