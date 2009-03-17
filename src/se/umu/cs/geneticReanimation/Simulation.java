@@ -26,7 +26,7 @@ public class Simulation implements Runnable {
     private static final URL RESOURCE_URL
         = Simulation.class.getResource("/resources");
     
-    private final boolean DRAW_GUI = true;
+    private final boolean DRAW_GUI = false;
     private final int FPS = 600;
 
     private ProcessingView view;
