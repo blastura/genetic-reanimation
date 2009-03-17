@@ -1,6 +1,10 @@
 digraph net {
    rankdir=LR;
    node [shape=circle];
+   labeldistance=2.0;
+   
+   indata [label = "Indata" shape=diamond]
+   indata -> in [label = "sigmoid"]
    
    in [label = "In"];
    in -> out [label = "w1"]
