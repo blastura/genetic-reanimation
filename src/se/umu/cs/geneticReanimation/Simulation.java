@@ -21,9 +21,8 @@ import se.umu.cs.geneticReanimation.creature.Creature;
 import se.umu.cs.geneticReanimation.creature.WormCreature;
 
 public class Simulation implements Runnable {
-    //private static final URL RESOURCE_URL = Simulation.class.getResource("/");
 
-    private final boolean DRAW_GUI = false;
+    private final boolean DRAW_GUI = true;
     private final int FPS = 60;
 
     private ProcessingView view;
