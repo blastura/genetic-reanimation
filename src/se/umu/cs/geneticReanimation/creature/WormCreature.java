@@ -7,6 +7,7 @@ import net.phys2d.raw.Body;
 import net.phys2d.raw.DistanceJoint;
 import net.phys2d.raw.Joint;
 import net.phys2d.raw.SpringyAngleJoint;
+import net.phys2d.raw.BasicJoint;
 import net.phys2d.raw.World;
 import net.phys2d.raw.shapes.Box;
 import se.umu.cs.geneticReanimation.neuralnet.Brain;
@@ -21,7 +22,7 @@ public class WormCreature implements Creature {
     private List<Joint> jointList;
 
     // Effectors
-    private SpringyAngleJoint[] saj;
+    private BasicJoint[] saj;
 
     public WormCreature(double[] genotype) {
         this.brain = new HopfieldNeuralNet(genotype);
@@ -58,7 +59,7 @@ public class WormCreature implements Creature {
         float spaceing = 10f;
         int sections = 5;
 
-        saj = new SpringyAngleJoint[sections-1];
+        saj = new BasicJoint[sections-1];
 
         Body segment = null;
         Body prev_segment;
@@ -66,7 +67,7 @@ public class WormCreature implements Creature {
         for(int i = 0; i < sections; i++) {
             prev_segment = segment;
             segment = new Body("Segment", new Box(sWidth, sHeight), 1);
-            segment.setPosition((sWidth + spaceing)*i-360, 420);
+            segment.setPosition((sWidth + spaceing)*i-360, 420 - 250);
             bodyList.add(segment);
             if(i > 0) {
                 Vector2f fixpoint1 = new Vector2f(sWidth/2f, 0);
@@ -75,8 +76,7 @@ public class WormCreature implements Creature {
                                                      fixpoint1, fixpoint2, spaceing);
                 jointList.add(dj);
 
-                saj[i-1] = new SpringyAngleJoint(prev_segment, segment,
-                                                 fixpoint1, fixpoint2, 500f, 0f);
+                saj[i-1] = new BasicJoint(prev_segment, segment, getMidPosition(prev_segment, segment));
                 jointList.add(saj[i-1]);
             }
         }
@@ -97,15 +97,9 @@ public class WormCreature implements Creature {
         double[] outputs = brain.getOutputs();
 
         // Affect worm
-        for (int i = 0, length = outputs.length; i < length && i < saj.length; i++) {
-            float angle = saj[i].getOriginalAngle();
-            float goal = (float)(outputs[i] * Math.PI);
-            if(goal > angle) {
-                angle += Math.min(MAX_ANGLE_STEP, goal-angle);
-            } else if (goal < angle) {
-                angle -= Math.min(MAX_ANGLE_STEP, angle-goal);
-            }
-            saj[i].setOriginalAngle(angle);
+        for (int i = 0, length = outputs.length; i < length && i < bodyList.size(); i++) {
+            float goal = (float)(outputs[i] * (Math.PI / 2));
+            bodyList.get(i).adjustAngularVelocity(goal);
         }
     }
 

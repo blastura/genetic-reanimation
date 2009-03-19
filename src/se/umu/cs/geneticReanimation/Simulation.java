@@ -62,7 +62,7 @@ public class Simulation implements Runnable {
     private void initWorld() {
         this.world = new World(new Vector2f(0.0f, 10.0f),
                                20, new QuadSpaceStrategy(20,5));
-        view.size(1600 / 2, 1000 / 2);
+        view.size(1600 / 2, 1000 / 4);
         resetWorld();
     }
 
