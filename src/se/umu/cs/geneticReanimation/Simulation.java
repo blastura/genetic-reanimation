@@ -156,10 +156,10 @@ public class Simulation implements Runnable {
 
         String filename = "gen(" + generation + ")_fit(" + (int) bestCreature.getFitness() + ")";
 
-        bestCreature = new WormCreature(bestCreature.getGenotype());
-        bestCreature.connectToWorld(world);
+        Creature newBestCreature = new WormCreature(bestCreature.getGenotype());
+        newBestCreature.connectToWorld(world);
         recordMovie(filename);
-        simulate(bestCreature, true);
+        simulate(newBestCreature, true);
         stopMovie();
         resetWorld();
     }
