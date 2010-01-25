@@ -1,5 +1,5 @@
 \documentclass[titlepage, twocolumn, a4paper, 11pt, swedish]{article}
-\usepackage[swedish]{babel}
+\usepackage[swedish, english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{verbatim}
 \usepackage{fancyhdr}
@@ -7,6 +7,8 @@
 \usepackage{parskip}
 \usepackage{enumerate}
 \usepackage{varioref}
+
+\selectlanguage{swedish}
 
 % Column spacing
 \setlength{\columnsep}{10mm}
@@ -63,6 +65,7 @@
 \def\mailFem{dit04rad@cs.umu.se}
 
 \def\pathtocode{http://github.com/blastura/genetic-reanimation/tree/master}
+\def\pathtosite{http://sites.google.com/site/geneticreanimation/}
 
 \def\handledareEtt{Jonny Pettersson, jonny@cs.umu.se}
 \def\handledareTva{Anders Broberg, bopspe@cs.umu.se}
@@ -93,7 +96,9 @@
       \namnTre, \mailTre\\
       \namnFyra, \mailFyra\\
       \namnFem, \mailFem\\
-      \texttt{\pathtocode}
+      \vspace{10mm}
+      Källkod: \texttt{\pathtocode}\\
+      Projektsida: \texttt{\pathtosite}\\
     \end{large}
     \vfill
     \large{\textbf{Handledare}}\\
@@ -112,11 +117,15 @@
 \cfoot{}
 \rfoot{}
 
+\begin{otherlanguage}{english}
 \begin{abstract}
 % TODO: Sammanfattning/abstract
 This report describes a simple simulation for evolving movements of a worm over time and generations using a genetic algorithm. A simplified and modified 2D version of Karl Sims work with Evolving Virtual Creatures is created. Creatures are created with a random genotype, the creatures movements are simulated and patterns arise from a Hopfield inspired neural network. The genotype is simply all the weights of the neural network which evolve over generations from a Genetic Algorithm. The fitness for each creature is determined by how far they are able to move within a specified number of steps in the simulation. A large number of tests are made and a rolling or a combination of rolling and jumping movement seems to be the most effective pattern for forward movement in our simulation.
 \end{abstract}
- 
+\end{otherlanguage}
+
+\selectlanguage{swedish}
+
 \cleardoublepage
 \newpage
 \onecolumn
@@ -131,24 +140,28 @@ This report describes a simple simulation for evolving movements of a worm over 
 % Introduktion till ämnet, inklusive översikt av tidigare studier
 % \cite{flake}
 
-I detta projekt har vi undersökt möjligheten att utveckla rörelsemönster för en enkel varelse med hjälp av genetiska algoritmer (GA). Varelsen har ett neuralt nät som ”hjärna” och har formen av en ledad ”mask”.
+I detta projekt har vi undersökt möjligheten att utveckla rörelsemönster för en enkel varelse med hjälp av genetiska algoritmer (GA). Varelsen har ett neuralt nät som hjärna och har formen av en ledad mask. En enkel modell har implementerats och försök har gjorts i denna modell för att undersöka om GAn kunde hitta rörelsemönster och hur bra dessa blir. 
+
+\subsection{Rapportens uppbyggnad}
+Nedan introduceras ämnet kort och frågeställningarna läggs fram. Den modell vi byggt för att besvara våra frågeställningar presenteras under Modellbeskrivning. Därefter visas de resultat vi fått från våra körningar i modellen under Resultat. Slutligen drar vi slutsatser kring resultaten, försöker besvara frågeställningarna och resonerar kring framtida studier under Diskussion.
 
 \subsection{Karl Sims}
 Karl Sims utforskar i Evolving Virtual Creatures \cite{sims} både hur varelsers form och deras beteenden kan utvecklas med hjälp av GA. Varelserna har sensorer och effektorer som är kopplade till in- och utnoder i ett neuralt nät. 
 
-I sina försök använder Sims en GA för att optimera både struktur och vikter i det neurala nätet. Det nät han använder har i varje nod en av många matematiska funktioner; exempelvis sinus, summa, produkt, max, osv. Sims lät sina försök köra mellan 50 och 100 generationer och optimerade mot olika typer av beteenden som ex vandring, simmande och hoppande rörelser. 
+I sina försök använder Sims en GA för att optimera både struktur och vikter i det neurala nätet. Det nät han använder har i varje nod en av många matematiska funktioner, exempelvis: sinus, summa, produkt, max, osv. Sims lät sina försök köra mellan 50 och 100 generationer och optimerade mot olika typer av beteenden som ex vandring, simmande och hoppande rörelser. 
 
 \subsection{Hugo de Garis}
 Hugo de Garis forskning i \textit{Genetic Programming: Evolutionary Approaches to Multistrategy Learning} \cite{garis} inriktar sig i störst utsträckning mot utveckling av hårdvara med hjälp av genetiska algoritmer. Han beskriver metoder som shaping (att i olika steg ändra definitionen för fitness) och talar om "utvecklingsbara system" med de avseendet att vissa system inte kan ge önskvärt beteende med hjälp av genetiska algoritmer. Han nämner att de inte finns något sätt att definitivt avgöra vilka system som är utvecklingsbara med fasta kriterier.
 
 Garis har utvecklat en simulerad ödla som han kallar \textit{LIZZY} \cite{garis}. Den virtuella ödlan \textit{LIZZY} känner sin omvärld med två antenner och tar därigenom emot karaktäristiska signaler från tre sorters varelser i dess omgivning; Mate, Prey och Predator. Med hjälp av ett neuralt nät och en genetisk algoritm lär sig sedan \textit{LIZZY} att söka upp Prey och Mate för att sedan vidta passande åtgärder och att fly undan Predators.
 
-\subsection{Syfte}
+\subsection{Syfte och frågeställningar}
 Inledningsvis valde vi ämnet ''Rörelse\-mönster i 2D med hjälp av Genetiska algoritmer''. Vi ville utforska ämnet GA lite djupare och tyckte Sims försök var en bra utgångspunkt. 
 
 I detta arbete har vi försökt återskapa en förenklad variant på Sims arbete. Istället för tre dimensioner använder vi bara två. Dessutom använder vi bara en fix varelse och en enklare hjärna. 
 
 Vi vill se om denna förenklade modell kommer hitta fungerande rörelsemönster. Hur effektiv den är på detta och hur intressant resultatet blir kommer också studeras. 
+
 %Vilka faktorer är viktiga/har stor påverkan på resultatet vid simulering av rörelsemönster.
 
 % Frågeställning fylls i här typ
@@ -157,6 +170,7 @@ Vi vill se om denna förenklade modell kommer hitta fungerande rörelsemönster.
 %Hur effektiva är GAs på att hitta fungerande rörelsemönster? 
 %Kan vi upprepa Browns, Nicolas Lassabe eller Karl Sims simuleringar i en 
 %2D-miljö? åäö.
+
 
 
 \section{Metodbeskrivning}
@@ -175,12 +189,12 @@ Varelsen består av en mask med 4 leder och 5 kroppsdelar, se figur \vref{fig:cr
 
  Att en maskliknande varelse har valts beror på att kroppen är relativ enkel i sin sammansättning och komplexiteten sjunker således. Kroppsdelarnas vikt, ledernas typ och ledernas rörelsefrihet har valts efter eget tycke då varelsen ses som ett inledande exempel på hur systemet kan fungera. Valet av indata för varelsen grundas i en önskan om ledernas vetskap om varandra.
 
- Källkod för den implementerade varelsen finns i bilaga \vref{app:WormCreature}.
+ Källkod för den implementerade varelsen finns att hitta på projektsidan.
 
 \begin{figure}
   \begin{center}
     \includegraphics[width=78mm]{images/creature.pdf}
-    \caption{Representation av varelse}
+    \caption{Representation av varelse.}
     \label{fig:creature.pdf}
   \end{center}
 \end{figure}
@@ -190,17 +204,17 @@ Varelsens sensordata räknas ut som differensen mellan kroppdelarnas y-position.
 
 \subsubsection{Effektorer}
 % Joints
-Varelsens effektorer utgörs i implementationen av en viss typ av leder som krafter kan appliceras på. Efter att varelsens hjärna har bearbetat indata så hämtas utdata som nu kommer att vara mellan -1 och 1. Denna utdata multiplicaras med $\pi$ för att få en vinkel mellan $-\pi$ och $\pi$, det resulterade värdet låtes påverka leden, som i sin tur påverkar de två kroppar leden är fäst vid.
+Varelsens effektorer utgörs i implementationen av en viss typ av leder som krafter kan appliceras på. Efter att varelsens hjärna har bearbetat indata så hämtas utdata som nu kommer att vara mellan -1 och 1. Denna utdata multiplicaras med $\pi$ för att få en vinkel mellan $-\pi$ och $\pi$, det resulterande värdet påverkar leden, som i sin tur påverkar de två kroppar leden är fäst vid.
 
 \subsubsection{Neuralt nät}
 % Neuroner
-Varelsens hjärna består av ett neuralt nät som styr dess beteende. Det neurala nätet är vagt implementerat enligt Hopfields modell för neurala nät, se kapitel 13 i boken \textit{Neural networks: a systematic introduction}, se \cite{raul}. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt.
+Varelsens hjärna består av ett neuralt nät som styr dess beteende. Det neurala nätet är vagt implementerat enligt Hopfields modell för neurala nät, se kapitel 13 i boken \textit{Neural networks: a systematic introduction} \cite{raul}. Varje nod i det neurala nätet har bågar till och från alla andra noder. Varje båge har en vikt.
 
 För att mata nätet med indata tas värden emot och körs genom en sigmoid funktion $1/\frac{1}{1 + e^{-x}}$. Denna funktion är modifierad för att ge resultat mellan -1 och 1. Sigmoidfunktionen är uppritad i figur \vref{fig:sigmoid}. Javakod för sigmoid-funktionen som används visas i kodsnutt \vref{kod:sigmoid}. Vid varje simuleringssteg i hjärnan beräknas ett värde i varje nod. Värdet beräknas som en summa av värdet från varje båge gånger dess vikt. På denna summa appliceras sedan sigmoidfunktionen så värdet hamnar mellan -1 och 1.
 
 \begin{figure}
     \includegraphics[width=78mm]{images/sigmoid.jpg}
-    \caption{Plot av sigmoidfunktionen}
+    \caption{Plot av sigmoidfunktionen.}
     \label{fig:sigmoid}
 \end{figure}
 
@@ -218,7 +232,7 @@ Det görs ingen skillnad bland noderna i nätetet med avseende på vilka som tar
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=78mm]{images/neuralnet.pdf}
-    \caption{Neuralt nätverk med två noder}
+    \caption{Neuralt nätverk med två noder.}
     \label{fig:neuralnet.pdf}
   \end{center}
 \end{figure}
@@ -229,8 +243,7 @@ Det görs ingen skillnad bland noderna i nätetet med avseende på vilka som tar
 %\item hej
 %\end{enumerate}
 
-Källkoden för implementationen av det neurala nätet finns i bilaga \vref{app:HopfieldNeuralNet}.
-
+Källkoden för implementationen av det neurala nätet finns att hitta på projektsidan.
 \subsection{Simulering}
 Fysiksimuleringen använder biblioteket \textit{phys2d} \cite{phys2d} för själva fysiken. Detta bibliotek är skrivet av Kevin Glass och är en Java-variant av Erin Catto's plattform \textit{box2d} \cite{box2d}. Denna platform valdes på grund av att den bygger på Java och gruppen besitter kompetens inom språket. I simuleringen har ett markplan skapats och på detta en varelse. En vägg skapades även till vänster om masken för att förhindra att den försvinner bakåt ur fönstret.
 
@@ -246,22 +259,20 @@ Vid crossover sker en korsning mellan två individer, genotypen delas på en slu
 \item Kopiera över den individ med högst fitness från föregående generation till den nya populationen
 \item Upprepa till den bestämda andel crossover till nya generationen är utförd
 \begin{enumerate}
-\item Välj ut två grupper om tre individer
+\item Välj ut två grupper om tre individer slumpmässigt
 \item Utför crossover på den individ med högst fitness från respektive grupp och lägg över deras barn till den nya populationen
 \end{enumerate}
 \item Upprepa till den nya populationen har samma storlek som den föregående generationen
 \begin{enumerate}
-\item Välj grupp om tre individer
+\item Välj grupp om tre individer slumpmässigt
 \item Kopiera över den individ med högst fitness från de tre
 \end{enumerate}
 \item Mutera varje individ utom den första med högst fitness
 \end{enumerate}
 
-Källkoden till den genetiska algoritmen som används finns i bilaga \vref{app:GeneticAlgoritm}.
-
+Källkoden till den genetiska algoritmen som används finns att hitta på projektsidan.
 \section{Resultat}
-
-Följande avsnitt presenterar de resultat som arbetet resulterat i.
+Följande avsnitt presenterar resultat i form av typiska rörelsemönster och typisk utveckling för fitness.
 
 \subsection{Rörelsemönster}
 För att undersöka vilka rörelsemönster som får hög fitness har vi gjort ett stort antal testkörningar och spelat in den bästa varelsen i varje generation. Därefter har typiska rörelser med bra fitness valts ut och presenterats i form av bilder. Ett vanligt rörelsemönster är att masken rullar fram, det visas i figur \vref{fig:r1}. Ett annat rörelsemönster, hopp-rullande, som hade något högre fitness visas i figur \vref{fig:r2}.
@@ -281,33 +292,41 @@ För att undersöka vilka rörelsemönster som får hög fitness har vi gjort et
 \end{figure}
 
 \subsection{Fitness}
-För att undersöka hur fitness utvecklas har vi har testat att köra simuleringen ett flertal gånger och låta den köra mellan 15 och 20 generationer. Därefter plottat medel, max och min för fitness i varje generation. Detta syns i figur \vref{fig:d1}, figur \vref{fig:d2} och figur \vref{fig:d3}. De olika figurerna skiljer sig ganska mycket, men visar ändå karakteristiska egenskaper vi sett i de flesta av våra körningar så som att max-fitness ökar etappvis. Oftast stiger medelvärdet sakta över tiden.
+För att undersöka hur fitness utvecklas har vi har testat att köra simuleringen ett flertal gånger och låta den köra mellan 15 och 20 generationer. Därefter plottat medel, max och min för fitness i varje generation. Detta syns i figur \vref{fig:d1}-\vref{fig:d3}. De olika figurerna skiljer sig ganska mycket, men visar ändå karakteristiska egenskaper vi sett i de flesta av våra körningar så som att max-fitness ökar etappvis. Oftast stiger medelvärdet sakta över tiden.
 
 \begin{figure}
     \includegraphics[width=78mm]{images/diagram4.png}
-    \caption{Fitnessens utveckling över 20 generationer.}
+    \caption{Fitnessens utveckling över 20 generationer vid en godtycklig testkörning.}
     \label{fig:d1}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=78mm]{images/diagram3.png}
-    \caption{Fitnessens utveckling över 15 generationer.}
+    \caption{Fitnessens utveckling över 15 generationer vid en godtycklig testkörning.}
     \label{fig:d2}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=78mm]{images/diagram_m01c08_2.png}
-    \caption{Fitnessens utveckling över 15 generationer.}
+    \caption{Fitnessens utveckling över 15 generationer vid en godtycklig testkörning.}
     \label{fig:d3}
 \end{figure}
 
 \section{Diskussion}
-Ett flertal olika rörelsemönster hittades av vår algoritm. Många av dem var bara spasmiska eller icke-cykliska (dvs varelsen fastnar och stannar). Några rörelsemönster fungerade väl och förflyttade masken effektivt frammåt. 
+I denna diskussionsdel presenteras först slutsatser vi dragit från resultatet. Därefter påpekar vi de brister och begränsningar som finns i arbetet och modellen. Slutligen resoneras det kring hur man skulle kunna bygga vidare på arbetet.
 
+\subsection{Slutsatser}
+Här nedan försöker vi besvara de frågeställningar vi presenterat i inledningen. Andra slutsatser som kan dras redovisas även lite längre ner.
+
+\subsubsection{Fungerande rörelsemönster?}
+Ett flertal olika rörelsemönster hittades av vår algoritm. Många av dem var bara spasmiska eller icke-cykliska (dvs varelsen fastnar och stannar). Några rörelsemönster fungerade väl och förflyttade masken effektivt framåt. 
+
+\subsubsection{Intressanta och effektiva?}
 Man kan konstatera att vår enkla modell fungerar för att hitta rörelsemönster, men resultatet blir inte lika intressant som för Sims. Detta kan dock delvis förklaras med att en mask inte kan röra sig på så många olika sätt.
 
-Det rörelsemönster som gett mest framgång i våra studier är ett rullande eller rull-hoppande beteende. En förklaring till att detta mönster är vanligt i våra simuleringar, men inte i verkligheten kan vara att 2D-maskar inte kan tippa i djupled. Det är även tänkbart att våra simulerade maskar är starkare än naturliga motsvarigheter. I simuleringarna har det visat sig att rörelsemönsterna vi får ut är extremt beroende av de val som gjorts i fysiksimuleringen och uppbyggnaden av varlsen i denna simulering. För att återskapa en varelses rörelsemönster på ett mer \textit{naturligt} sätt hade en noggrannare studie av vald varelse (exempelvis mask) behövts. Med information om den naturligt förekommande varelsens effektorer för rörelse skulle snarliga effektorer behövt implementeras i fysiksimuleringen. Fysikmotorn vi valt har ingen riktigt tillfredställande led/effektor för att simulera de naturliga rörelsemönster vi tänkt oss. Vissa artefakter kan tänkas uppkommit som en bieffekt av den specifika led och fysikmotor vi valt.
+Det rörelsemönster som gett mest framgång i våra studier är ett rullande eller rull-hoppande beteende. En förklaring till att detta mönster är vanligt i våra simuleringar, men inte i verkligheten kan vara att 2D-maskar inte kan tippa i djupled. Det är även tänkbart att våra simulerade maskar är starkare än naturliga motsvarigheter. I simuleringarna har det visat sig att rörelsemönsterna vi får ut är extremt beroende av de val som gjorts i fysiksimuleringen och uppbyggnaden av varlsen i denna simulering. 
 
+\subsubsection{Övriga slutsatser}
 Vanligt förekommande resultat av simuleringarna är att varelsers fitness går upp väldigt snabbt i början och ligger sedan stabilt. Utvecklingen hos populationen kan ske i etapper istället för kontinueligt. Detta kan liknas vid naturlig evolution som också kan ske etappvis.
 
 \subsection{Begränsningar}
@@ -316,9 +335,11 @@ Ett stort problem med vår lösning är att fysiksimuleringen inte är helt dete
 Ibland försvinner masken ur simuleringen. Vi misstänker någon bugg i fysiksimuleringen som får masken att upphöra att existera. Fitness för maskar som försvunnit har exkluderats ur resultatet. 
 
 \subsection{Framtida arbete}
-Om man vill bygga vidare på detta arbete bör man nog initialt hitta lösningar till begränsningarna. Kanske en annan fysikmotor behövs. 
+Om man vill bygga vidare på detta arbete bör man nog initialt hitta lösningar till begränsningarna. Det kanske en annan fysikmotor för att kringgå några av begränsningarna. 
 
 Intressanta saker att utforska vore att låta hjärnan få fler sorters indata. Exempelvis om en kroppsdel rör i marken, någon sorts färdriktning och vinklar mellan kroppsdelar är indata man skulle kunna testa.
+
+För att återskapa en varelses rörelsemönster på ett mer \textit{naturligt} sätt hade en noggrannare studie av vald varelse (exempelvis mask) behövts. Med information om den naturligt förekommande varelsens effektorer för rörelse skulle snarliga effektorer behövt implementeras i fysiksimuleringen. Fysikmotorn vi valt har ingen riktigt tillfredställande led/effektor för att simulera de naturliga rörelsemönster vi tänkt oss. Vissa artefakter kan tänkas uppkommit som en bieffekt av den specifika led och fysikmotor vi valt.
 
 Det vore även intressant att undersöka hur metoden fungerar på ett mer komplext djur. 
 
@@ -337,6 +358,8 @@ Sims använde i sina försök sinus och andra komplexa funktioner i sitt neurala
 \newpage
 \appendix
 \pagenumbering{roman}
+
+\begin{comment}
 \section{Källkod}\label{sec:kallkod}
 Härefter följer källkod för implementationen.
 
@@ -379,4 +402,7 @@ Härefter följer källkod för implementationen.
 \begin{footnotesize}
   \verbatiminput{../test/se/umu/cs/geneticReanimation/neuralnet/HopfieldNeuralNetTest.java}
 \end{footnotesize}
+
+\end{comment}
+
 \end{document}
